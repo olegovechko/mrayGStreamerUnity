@@ -104,6 +104,7 @@ public class GstCustomTexture : GstBaseTexture {
 
 	void OnGUI()
 	{
+	/*
 		// This function should do input injection (if enabled), and drawing.
 		if (_player == null)
 			return;
@@ -126,6 +127,7 @@ public class GstCustomTexture : GstBaseTexture {
 				break;	
 			}
 		}
+	*/	
 	}
 
 	// Use this for initialization
@@ -133,8 +135,22 @@ public class GstCustomTexture : GstBaseTexture {
 	}
 
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+	{
+		// This function should do input injection (if enabled), and drawing.
+		if (_player == null)
+			return;
 
+		if(_imageGrabed)
+		{
+			Resize ((int)_grabbedSize.x,(int) _grabbedSize.y,_grabbedComponents,0);
+			if (m_Texture[0] == null)
+				Debug.LogError ("The GstTexture does not have a texture assigned and will not paint.");
+			else 
+			{
+                _newFrame = true;
+            }
+            _imageGrabed = false;
+		}
 	}
-
 }

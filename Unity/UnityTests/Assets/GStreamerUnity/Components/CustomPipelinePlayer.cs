@@ -14,6 +14,9 @@ public class CustomPipelinePlayer : MonoBehaviour {
 
 	public string pipeline = "";
 
+	public int FPS => 0;
+	public bool IsPlaying => false;
+	public long LastFrameMillis => 0;
 	public Rect BlitRect=new Rect(0,0,1,1);
 	//GstImageInfo _img;
 
@@ -25,7 +28,7 @@ public class CustomPipelinePlayer : MonoBehaviour {
 		m_Texture = gameObject.GetComponent<GstCustomTexture>();
 		m_Texture.Initialize ();
         
-		m_Texture.SetPipeline (pipeline+ " ! videoconvert ! video/x-raw,format=I420  ! appsink name=videoSink sync=false");
+		m_Texture.SetPipeline (pipeline+ "appsink name=videoSink sync=false");
 		m_Texture.Player.CreateStream ();
 		m_Texture.Player.Play ();
 

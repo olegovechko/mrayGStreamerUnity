@@ -71,7 +71,12 @@ public class GstImageInfo {
 	//[DllImport(GStreamerCore.DllName, CallingConvention = CallingConvention.Cdecl)]
 	//extern static private System.IntPtr mray_BlitImageNativeGLCall(System.IntPtr p, System.IntPtr _TextureNativePtr);
 
+#if UNITY_ANDROID && !UNITY_EDITOR
     [DllImport("RenderUnityPlugin", CallingConvention = CallingConvention.Cdecl)]
+#else
+	[DllImport(GStreamerCore.DllName, CallingConvention = CallingConvention.Cdecl)]
+#endif    
+	//[DllImport(GStreamerCore.DllName, CallingConvention = CallingConvention.Cdecl)]
     extern static private System.IntPtr mray_gst_ImageInfoBlitImageNativeGLCall(System.IntPtr p, System.IntPtr _TextureNativePtr);
 
     [DllImport(GStreamerCore.DllName, CallingConvention = CallingConvention.Cdecl)]
@@ -185,7 +190,7 @@ public class GstImageInfo {
 	public void BlitToTexture(Texture2D tex)
 	{
 		if (tex.width != _width || tex.height != _height || tex.format != ConvertFormat(_format)) {
-			tex.Resize (_width, _height, ConvertFormat(_format), false);
+			tex.Reinitialize (_width, _height, ConvertFormat(_format), false);
 			tex.Apply (false,false);
 
 		}

@@ -33,8 +33,20 @@ public class GstCustomPlayer:IGstPlayer  {
 	extern static private bool mray_gst_customPlayerCropFrame (System.IntPtr p, System.IntPtr target,int x,int y,int width,int height);
 
 
-
+#if UNITY_ANDROID && !UNITY_EDITOR
     [DllImport("RenderUnityPlugin", CallingConvention = CallingConvention.Cdecl)]
+#else
+	[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+#endif    
+    extern static private void mray_gst_customPlayerBlitImage(System.IntPtr p, System.IntPtr _TextureNativePtr, int _UnityTextureWidth, int _UnityTextureHeight);
+
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+    [DllImport("RenderUnityPlugin", CallingConvention = CallingConvention.Cdecl)]
+#else
+	[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+#endif    
+	//[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
     extern static private System.IntPtr mray_gst_BlitImageNativeGLCall(System.IntPtr p, System.IntPtr _TextureNativePtr, int _UnityTextureWidth, int _UnityTextureHeight);
 
 
@@ -204,6 +216,8 @@ public class GstCustomPlayer:IGstPlayer  {
         var frame = mray_gst_customPlayerGetLastFrame(m_Instance);
 
         GL.IssuePluginEvent(mray_gst_BlitImageNativeGLCall(frame, _NativeTexturePtr, _TextureWidth, _TextureHeight), 1);
+        //mray_gst_customPlayerBlitImage(m_Instance, _NativeTexturePtr, _TextureWidth, _TextureHeight);	// We pass Unity's width and height values of the texture
+
 	}
 
 	public bool GrabAudioFrame()

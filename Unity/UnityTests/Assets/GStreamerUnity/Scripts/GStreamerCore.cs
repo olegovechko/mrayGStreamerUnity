@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+
 using System.Collections;
 using System.Runtime.InteropServices;	// For DllImport.
 using System;
@@ -8,7 +9,7 @@ public class GStreamerCore {
 	
 	public const string DllName = "GStreamerUnityPlugin";
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
     [DllImport("gstreamer_android", CallingConvention = CallingConvention.Cdecl)]
     extern static private UIntPtr gst_android_get_application_class_loader();
 #endif
@@ -26,9 +27,12 @@ public class GStreamerCore {
 	[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
 	extern static private void mray_SetDebugFunction(FuncPtr str );
 
+#if UNITY_ANDROID && !UNITY_EDITOR
     [DllImport("RenderUnityPlugin", CallingConvention = CallingConvention.Cdecl)]
+#else
+	[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+#endif    
     extern static private void mray_Renderer_SetDebugFunction(FuncPtr str);
-
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal delegate void FuncPtr(
@@ -66,13 +70,13 @@ public class GStreamerCore {
 #if UNITY_ANDROID && !UNITY_EDITOR
         // Force loading of libgstreamer_android.so 
         gst_android_get_application_class_loader();
-       AndroidJNIHelper.debug = true;
+        AndroidJNIHelper.debug = true;
         AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
         AndroidJavaObject activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
-     /*   AndroidJavaClass gstAndroid = new AndroidJavaClass("org.freedesktop.gstreamer.GStreamer");
-        gstAndroid.CallStatic("init", activity); */
+//        AndroidJavaClass gstAndroid = new AndroidJavaClass("org.freedesktop.gstreamer.GStreamer");
+//        gstAndroid.CallStatic("init", activity);
 #endif
-
+/*
         // Setup the PATH environment variable so it can find the GstUnityBridge dll.
         var currentPath = Environment.GetEnvironmentVariable("PATH",
             EnvironmentVariableTarget.Process);
@@ -100,10 +104,13 @@ public class GStreamerCore {
                 EnvironmentVariableTarget.Process);
         Environment.SetEnvironmentVariable("GST_PLUGIN_PATH", dllPath, EnvironmentVariableTarget.Process);
 #endif
+*/
         Debug.Log("Done setting up plugin");
     }
 
     static int refCount = 0;
+    static FuncPtr log_handler = (string message) =>  Debug.Log("mrayGST: " + message);
+
     public static void Ref()
 	{
         /*	if (_nativeLibraryPtr == IntPtr.Zero) {
@@ -125,10 +132,13 @@ public class GStreamerCore {
 
             //if (!IsActive)
             {
-                FuncPtr log_handler = null;
-                log_handler = (string message) =>  Debug.Log("mrayGST: " + message);
+                //FuncPtr log_handler = null;
+                //log_handler = (string message) =>  Debug.Log("mrayGST: " + message);
+#if UNITY_ANDROID && !UNITY_EDITOR
+#else
                 mray_SetDebugFunction(log_handler);
                 mray_Renderer_SetDebugFunction(log_handler);
+#endif
                 Debug.Log("GStreamer Initializing");
                 mray_gstreamer_initialize();
                 Debug.Log("GStreamer Initialization done");
