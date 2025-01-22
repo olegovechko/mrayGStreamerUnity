@@ -45,10 +45,13 @@ void LogMessage_internal(ELogLevel level,const std::string& msg)
 
 	m += msg;
 #if UNITY_WIN
-	OutputDebugStringA(m.c_str());
+	//OutputDebugStringA(m.c_str());
+	LogManager::Instance()->LogMessage(m);
+#elif UNITY_ANDROID
+
 #else
 	printf("%s", m.c_str());
-#endif
+
 	if (Debug)
 	{
 		for (int i = 0; i < log_buffer.size(); ++i)
@@ -58,7 +61,7 @@ void LogMessage_internal(ELogLevel level,const std::string& msg)
 	}
 	else
 		log_buffer.push_back(m);
-	//LogManager::Instance()->LogMessage(m);
+#endif
 }
 
 

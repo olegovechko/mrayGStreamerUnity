@@ -179,6 +179,9 @@
     <ClCompile Include="..\sources\RendererHelpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\includes\RenderAPI_Vulkan.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Android\jni\Android.mk">

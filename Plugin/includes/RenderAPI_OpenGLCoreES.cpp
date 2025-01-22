@@ -13,7 +13,10 @@
 #if UNITY_IPHONE
 #	include <OpenGLES/ES2/gl.h>
 #elif UNITY_ANDROID || UNITY_WEBGL
-#	include <GLES2/gl2.h>
+//#	include <GLES2/gl2.h>
+ #	include <GLES3/gl3.h>
+//#	include <OpenGLES/ES3/gl.h>
+
 #elif UNITY_OSX
 #	include <OpenGL/gl3.h>
 #elif UNITY_WIN
@@ -133,15 +136,16 @@ static GLuint CreateShader(GLenum type, const char* sourceText)
 void RenderAPI_OpenGLCoreES::CreateResources()
 {
 	// Create shaders
-	if (m_APIType == kUnityGfxRendererOpenGLES20)
-	{
-		m_VertexShader = CreateShader(GL_VERTEX_SHADER, kGlesVProgTextGLES2);
-		m_FragmentShader = CreateShader(GL_FRAGMENT_SHADER, kGlesFShaderTextGLES2);
-	}
-	else if (m_APIType == kUnityGfxRendererOpenGLES30)
+    if (m_APIType == kUnityGfxRendererOpenGLES30)
 	{
 		m_VertexShader = CreateShader(GL_VERTEX_SHADER, kGlesVProgTextGLES3);
 		m_FragmentShader = CreateShader(GL_FRAGMENT_SHADER, kGlesFShaderTextGLES3);
+		//LogMessage(ELL_INFO, "using OpenGLES30");
+
+	} else if (m_APIType == kUnityGfxRendererOpenGLES20)
+	{
+		m_VertexShader = CreateShader(GL_VERTEX_SHADER, kGlesVProgTextGLES2);
+		m_FragmentShader = CreateShader(GL_FRAGMENT_SHADER, kGlesFShaderTextGLES2);
 	}
 #	if SUPPORT_OPENGL_CORE
 	else if (m_APIType == kUnityGfxRendererOpenGLCore)
@@ -152,6 +156,8 @@ void RenderAPI_OpenGLCoreES::CreateResources()
 
 		m_VertexShader = CreateShader(GL_VERTEX_SHADER, kGlesVProgTextGLCore);
 		m_FragmentShader = CreateShader(GL_FRAGMENT_SHADER, kGlesFShaderTextGLCore);
+		LogMessage(ELL_INFO, "using OpenGLCore");
+
 	}
 #	endif // if SUPPORT_OPENGL_CORE
 
@@ -274,16 +280,12 @@ void RenderAPI_OpenGLCoreES::EndModifyTexture(void* textureHandle, int textureWi
 	//char buffer[256];
 	glBindTexture(GL_TEXTURE_2D, gltex);
 	GLuint fmt = GL_RGBA;
-	if (comps == 1)
-#ifdef UNITY_WIN
-		fmt = GL_ALPHA;
-#else
-		fmt = GL_ALPHA;
-#endif
+	if (comps == 1) 
+		fmt = GL_LUMINANCE;
+	
 	//glGetTexLevelParameteriv(GL_TEXTURE_2D,0,GL_TEXTURE_INTERNAL_FORMAT,&fmt);
 
-	//sprintf(buffer,"Texture %d, width: %d, height: %d, comps: %d, data: %d",(int)gltex,textureWidth,textureHeight,comps,(int)dataPtr);
-	//LogMessage(buffer,ELL_INFO);
+	//sprintf(buffer,"Texture %d, width: %d, height: %d, comps: %d, data: %d",(int)gltex,textureWidth,textureHeight,comps,(int)dataPtr);	
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, textureWidth, textureHeight, fmt, GL_UNSIGNED_BYTE, dataPtr);
 }
 

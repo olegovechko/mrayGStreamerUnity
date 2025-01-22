@@ -73,3 +73,6 @@ Lib/*
 ipch/*
 Bin/*
 Dependencies/*
+/Plugin/Android/gst-android-build
+/Plugin/Android/gst-build-arm64-v8a
+/Plugin/Android/gst-build-armeabi-v7a

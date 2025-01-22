@@ -20,6 +20,8 @@ purpose:
 #define GstCustomVideoStreamer_h__
 
 #include "IGStreamerStreamer.h"
+#include <string>
+
 
 namespace mray
 {

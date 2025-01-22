@@ -279,48 +279,45 @@ void GStreamerCore::_loopFunction() {
 
 void GStreamerCore::_StartLoop()
 {
-	if (true)
-	{
-		GError *err = 0;
-		gub_main_loop_thread = g_thread_new("GStreamerUnityPlugin Main Thread", gst_main_loop_func, this);
-		if (!gub_main_loop_thread) {
-			LogMessage(ELL_INFO, "Failed to create GLib main thread: %s", err ? err->message : "<No error message>");
-			return;
-		}
 
+#if (1) //defined (__ANDROID__)
+	GError* err = 0;
+	gub_main_loop_thread = g_thread_new("GStreamerUnityPlugin Main Thread", gst_main_loop_func, this);
+	if (!gub_main_loop_thread) {
+		//LogMessage("Failed to create GLib main thread: %s", ELL_INFO);
+		return;
 	}
-	else {
-		m_threadFunc = new GstMainLoopThread();
-		m_mainLoopThread = OS::IThreadManager::getInstance().createThread(m_threadFunc);
-		m_mainLoopThread->start(0);
-	}
+#else	
+	m_threadFunc = new GstMainLoopThread();
+	m_mainLoopThread = OS::IThreadManager::getInstance().createThread(m_threadFunc);
+	m_mainLoopThread->start(0);
+#endif	
+
 }
 
 void GStreamerCore::_StopLoop()
 {
-	if (true) {
-
-		if (!gub_main_loop) {
-			return;
-		}
-		g_main_loop_quit(gub_main_loop);
-		gub_main_loop = NULL;
-		g_thread_join(gub_main_loop_thread);
-		gub_main_loop_thread = NULL;
-	}else{
-		if (!m_threadFunc)
-			return;
-		GstMainLoopThread* mainLoop = (GstMainLoopThread*)m_threadFunc;
-		g_main_loop_quit(mainLoop->main_loop);
-		bool running = g_main_loop_is_running(mainLoop->main_loop);
-		g_main_loop_unref(mainLoop->main_loop);
-		delete m_threadFunc;
-		OS::IThreadManager::getInstance().killThread(m_mainLoopThread);
-		delete m_mainLoopThread;
-		m_threadFunc = 0;
-		m_mainLoopThread = 0;
+#if (1) //defined (__ANDROID__)
+	if (!gub_main_loop) {
+		return;
 	}
-
+	g_main_loop_quit(gub_main_loop);
+	gub_main_loop = NULL;
+	g_thread_join(gub_main_loop_thread);
+	gub_main_loop_thread = NULL;
+#else
+	if (!m_threadFunc)
+		return;
+	GstMainLoopThread* mainLoop = (GstMainLoopThread*)m_threadFunc;
+	g_main_loop_quit(mainLoop->main_loop);
+	bool running = g_main_loop_is_running(mainLoop->main_loop);
+	g_main_loop_unref(mainLoop->main_loop);
+	delete m_threadFunc;
+	OS::IThreadManager::getInstance().killThread(m_mainLoopThread);
+	delete m_mainLoopThread;
+	m_threadFunc = 0;
+	m_mainLoopThread = 0;
+#endif
 }
 
 		

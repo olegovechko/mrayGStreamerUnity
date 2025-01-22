@@ -18,6 +18,7 @@
 using namespace mray;
 using namespace video;
 
+/*
 struct MultiNetRenderRequest
 {
 	void* p;
@@ -27,6 +28,7 @@ struct MultiNetRenderRequest
 	int index;
 };
 std::vector<MultiNetRenderRequest> __multiNetRequests;
+*/
 
 extern "C" UNITY_INTERFACE_EXPORT void mray_gst_multiNetSetRecordToFile(GstNetworkMultipleVideoPlayer* p, const char* filename, int framerate)
 {

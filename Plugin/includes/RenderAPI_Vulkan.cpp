@@ -7,7 +7,6 @@
 #include <map>
 #include <vector>
 #include <math.h>
-#include "UnityHelpers.h"
 
 // This plugin does not link to the Vulkan loader, easier to support multiple APIs and systems that don't have Vulkan support
 #define VK_NO_PROTOTYPES
@@ -39,7 +38,7 @@
     apply(vkCmdBindVertexBuffers); \
     apply(vkDestroyPipeline); \
     apply(vkDestroyPipelineLayout);
-    
+
 #define VULKAN_DEFINE_API_FUNCPTR(func) static PFN_##func func
 VULKAN_DEFINE_API_FUNCPTR(vkGetInstanceProcAddr);
 UNITY_USED_VULKAN_API_FUNCTIONS(VULKAN_DEFINE_API_FUNCPTR);
@@ -50,8 +49,8 @@ static void LoadVulkanAPI(PFN_vkGetInstanceProcAddr getInstanceProcAddr, VkInsta
     if (!vkGetInstanceProcAddr && getInstanceProcAddr)
         vkGetInstanceProcAddr = getInstanceProcAddr;
 
-	if (!vkCreateInstance)
-		vkCreateInstance = (PFN_vkCreateInstance)vkGetInstanceProcAddr(VK_NULL_HANDLE, "vkCreateInstance");
+    if (!vkCreateInstance)
+        vkCreateInstance = (PFN_vkCreateInstance)vkGetInstanceProcAddr(VK_NULL_HANDLE, "vkCreateInstance");
 
 #define LOAD_VULKAN_FUNC(fn) if (!fn) fn = (PFN_##fn)vkGetInstanceProcAddr(instance, #fn)
     UNITY_USED_VULKAN_API_FUNCTIONS(LOAD_VULKAN_FUNC);
@@ -61,7 +60,7 @@ static void LoadVulkanAPI(PFN_vkGetInstanceProcAddr getInstanceProcAddr, VkInsta
 static VKAPI_ATTR void VKAPI_CALL Hook_vkCmdBeginRenderPass(VkCommandBuffer commandBuffer, const VkRenderPassBeginInfo* pRenderPassBegin, VkSubpassContents contents)
 {
     // Change this to 'true' to override the clear color with green
-	const bool allowOverrideClearColor = false;
+    const bool allowOverrideClearColor = false;
     if (pRenderPassBegin->clearValueCount <= 16 && pRenderPassBegin->clearValueCount > 0 && allowOverrideClearColor)
     {
         VkClearValue clearValues[16] = {};
@@ -90,11 +89,11 @@ static VKAPI_ATTR VkResult VKAPI_CALL Hook_vkCreateInstance(const VkInstanceCrea
     VkResult result = vkCreateInstance(pCreateInfo, pAllocator, pInstance);
     if (result == VK_SUCCESS)
         LoadVulkanAPI(vkGetInstanceProcAddr, *pInstance);
- 
+
     return result;
 }
 
-static int FindMemoryTypeIndex(VkPhysicalDeviceMemoryProperties const & physicalDeviceMemoryProperties, VkMemoryRequirements const & memoryRequirements, VkMemoryPropertyFlags memoryPropertyFlags)
+static int FindMemoryTypeIndex(VkPhysicalDeviceMemoryProperties const& physicalDeviceMemoryProperties, VkMemoryRequirements const& memoryRequirements, VkMemoryPropertyFlags memoryPropertyFlags)
 {
     uint32_t memoryTypeBits = memoryRequirements.memoryTypeBits;
 
@@ -133,7 +132,10 @@ static PFN_vkGetInstanceProcAddr UNITY_INTERFACE_API InterceptVulkanInitializati
 
 extern "C" void RenderAPI_Vulkan_OnPluginLoad(IUnityInterfaces* interfaces)
 {
-    interfaces->Get<IUnityGraphicsVulkan>()->InterceptInitialization(InterceptVulkanInitialization, NULL);
+    if (IUnityGraphicsVulkanV2* vulkanInterface = interfaces->Get<IUnityGraphicsVulkanV2>())
+        vulkanInterface->AddInterceptInitialization(InterceptVulkanInitialization, NULL, 0);
+    else if (IUnityGraphicsVulkan* vulkanInterface = interfaces->Get<IUnityGraphicsVulkan>())
+        vulkanInterface->InterceptInitialization(InterceptVulkanInitialization, NULL);
 }
 
 struct VulkanBuffer
@@ -162,139 +164,139 @@ static VkPipelineLayout CreateTrianglePipelineLayout(VkDevice device)
 }
 
 namespace Shader {
-// Source of vertex shader (filename: shader.vert)
-/*
-#version 310 es
-layout(location = 0) in highp vec3 vpos;
-layout(location = 1) in highp vec4 vcol;
-layout(location = 0) out highp vec4 color;
-layout(push_constant) uniform PushConstants { mat4 matrix; };
-void main() {
-    gl_Position = matrix * vec4(vpos, 1.0);
-    color = vcol;
-}
-*/
+    // Source of vertex shader (filename: shader.vert)
+    /*
+    #version 310 es
+    layout(location = 0) in highp vec3 vpos;
+    layout(location = 1) in highp vec4 vcol;
+    layout(location = 0) out highp vec4 color;
+    layout(push_constant) uniform PushConstants { mat4 matrix; };
+    void main() {
+        gl_Position = matrix * vec4(vpos, 1.0);
+        color = vcol;
+    }
+    */
 
-// Source of fragment shader (filename: shader.frag)
-/*
-#version 310 es
-layout(location = 0) out highp vec4 fragColor;
-layout(location = 0) in highp vec4 color;
-void main() { fragColor = color; }
-*/
-// compiled to SPIR-V using:
-// %VULKAN_SDK%\bin\glslc -mfmt=num shader.frag shader.vert -c
+    // Source of fragment shader (filename: shader.frag)
+    /*
+    #version 310 es
+    layout(location = 0) out highp vec4 fragColor;
+    layout(location = 0) in highp vec4 color;
+    void main() { fragColor = color; }
+    */
+    // compiled to SPIR-V using:
+    // %VULKAN_SDK%\bin\glslc -mfmt=num shader.frag shader.vert -c
 
-const uint32_t vertexShaderSpirv[] = {
-	0x07230203,0x00010000,0x000d0007,0x00000024,
-	0x00000000,0x00020011,0x00000001,0x0006000b,
-	0x00000001,0x4c534c47,0x6474732e,0x3035342e,
-	0x00000000,0x0003000e,0x00000000,0x00000001,
-	0x0009000f,0x00000000,0x00000004,0x6e69616d,
-	0x00000000,0x0000000a,0x00000016,0x00000020,
-	0x00000022,0x00030003,0x00000001,0x00000136,
-	0x000a0004,0x475f4c47,0x4c474f4f,0x70635f45,
-	0x74735f70,0x5f656c79,0x656e696c,0x7269645f,
-	0x69746365,0x00006576,0x00080004,0x475f4c47,
-	0x4c474f4f,0x6e695f45,0x64756c63,0x69645f65,
-	0x74636572,0x00657669,0x00040005,0x00000004,
-	0x6e69616d,0x00000000,0x00060005,0x00000008,
-	0x505f6c67,0x65567265,0x78657472,0x00000000,
-	0x00060006,0x00000008,0x00000000,0x505f6c67,
-	0x7469736f,0x006e6f69,0x00070006,0x00000008,
-	0x00000001,0x505f6c67,0x746e696f,0x657a6953,
-	0x00000000,0x00030005,0x0000000a,0x00000000,
-	0x00060005,0x0000000e,0x68737550,0x736e6f43,
-	0x746e6174,0x00000073,0x00050006,0x0000000e,
-	0x00000000,0x7274616d,0x00007869,0x00030005,
-	0x00000010,0x00000000,0x00040005,0x00000016,
-	0x736f7076,0x00000000,0x00040005,0x00000020,
-	0x6f6c6f63,0x00000072,0x00040005,0x00000022,
-	0x6c6f6376,0x00000000,0x00050048,0x00000008,
-	0x00000000,0x0000000b,0x00000000,0x00050048,
-	0x00000008,0x00000001,0x0000000b,0x00000001,
-	0x00030047,0x00000008,0x00000002,0x00040048,
-	0x0000000e,0x00000000,0x00000005,0x00050048,
-	0x0000000e,0x00000000,0x00000023,0x00000000,
-	0x00050048,0x0000000e,0x00000000,0x00000007,
-	0x00000010,0x00030047,0x0000000e,0x00000002,
-	0x00040047,0x00000016,0x0000001e,0x00000000,
-	0x00040047,0x00000020,0x0000001e,0x00000000,
-	0x00040047,0x00000022,0x0000001e,0x00000001,
-	0x00020013,0x00000002,0x00030021,0x00000003,
-	0x00000002,0x00030016,0x00000006,0x00000020,
-	0x00040017,0x00000007,0x00000006,0x00000004,
-	0x0004001e,0x00000008,0x00000007,0x00000006,
-	0x00040020,0x00000009,0x00000003,0x00000008,
-	0x0004003b,0x00000009,0x0000000a,0x00000003,
-	0x00040015,0x0000000b,0x00000020,0x00000001,
-	0x0004002b,0x0000000b,0x0000000c,0x00000000,
-	0x00040018,0x0000000d,0x00000007,0x00000004,
-	0x0003001e,0x0000000e,0x0000000d,0x00040020,
-	0x0000000f,0x00000009,0x0000000e,0x0004003b,
-	0x0000000f,0x00000010,0x00000009,0x00040020,
-	0x00000011,0x00000009,0x0000000d,0x00040017,
-	0x00000014,0x00000006,0x00000003,0x00040020,
-	0x00000015,0x00000001,0x00000014,0x0004003b,
-	0x00000015,0x00000016,0x00000001,0x0004002b,
-	0x00000006,0x00000018,0x3f800000,0x00040020,
-	0x0000001e,0x00000003,0x00000007,0x0004003b,
-	0x0000001e,0x00000020,0x00000003,0x00040020,
-	0x00000021,0x00000001,0x00000007,0x0004003b,
-	0x00000021,0x00000022,0x00000001,0x00050036,
-	0x00000002,0x00000004,0x00000000,0x00000003,
-	0x000200f8,0x00000005,0x00050041,0x00000011,
-	0x00000012,0x00000010,0x0000000c,0x0004003d,
-	0x0000000d,0x00000013,0x00000012,0x0004003d,
-	0x00000014,0x00000017,0x00000016,0x00050051,
-	0x00000006,0x00000019,0x00000017,0x00000000,
-	0x00050051,0x00000006,0x0000001a,0x00000017,
-	0x00000001,0x00050051,0x00000006,0x0000001b,
-	0x00000017,0x00000002,0x00070050,0x00000007,
-	0x0000001c,0x00000019,0x0000001a,0x0000001b,
-	0x00000018,0x00050091,0x00000007,0x0000001d,
-	0x00000013,0x0000001c,0x00050041,0x0000001e,
-	0x0000001f,0x0000000a,0x0000000c,0x0003003e,
-	0x0000001f,0x0000001d,0x0004003d,0x00000007,
-	0x00000023,0x00000022,0x0003003e,0x00000020,
-	0x00000023,0x000100fd,0x00010038
-};
-const uint32_t fragmentShaderSpirv[] = {
-    0x07230203,0x00010000,0x000d0006,0x0000000d,
-    0x00000000,0x00020011,0x00000001,0x0006000b,
-    0x00000001,0x4c534c47,0x6474732e,0x3035342e,
-    0x00000000,0x0003000e,0x00000000,0x00000001,
-    0x0007000f,0x00000004,0x00000004,0x6e69616d,
-    0x00000000,0x00000009,0x0000000b,0x00030010,
-    0x00000004,0x00000007,0x00030003,0x00000001,
-    0x00000136,0x000a0004,0x475f4c47,0x4c474f4f,
-    0x70635f45,0x74735f70,0x5f656c79,0x656e696c,
-    0x7269645f,0x69746365,0x00006576,0x00080004,
-    0x475f4c47,0x4c474f4f,0x6e695f45,0x64756c63,
-    0x69645f65,0x74636572,0x00657669,0x00040005,
-    0x00000004,0x6e69616d,0x00000000,0x00050005,
-    0x00000009,0x67617266,0x6f6c6f43,0x00000072,
-    0x00040005,0x0000000b,0x6f6c6f63,0x00000072,
-    0x00040047,0x00000009,0x0000001e,0x00000000,
-    0x00040047,0x0000000b,0x0000001e,0x00000000,
-    0x00020013,0x00000002,0x00030021,0x00000003,
-    0x00000002,0x00030016,0x00000006,0x00000020,
-    0x00040017,0x00000007,0x00000006,0x00000004,
-    0x00040020,0x00000008,0x00000003,0x00000007,
-    0x0004003b,0x00000008,0x00000009,0x00000003,
-    0x00040020,0x0000000a,0x00000001,0x00000007,
-    0x0004003b,0x0000000a,0x0000000b,0x00000001,
-    0x00050036,0x00000002,0x00000004,0x00000000,
-    0x00000003,0x000200f8,0x00000005,0x0004003d,
-    0x00000007,0x0000000c,0x0000000b,0x0003003e,
-    0x00000009,0x0000000c,0x000100fd,0x00010038
-};
+    const uint32_t vertexShaderSpirv[] = {
+        0x07230203,0x00010000,0x000d0007,0x00000024,
+        0x00000000,0x00020011,0x00000001,0x0006000b,
+        0x00000001,0x4c534c47,0x6474732e,0x3035342e,
+        0x00000000,0x0003000e,0x00000000,0x00000001,
+        0x0009000f,0x00000000,0x00000004,0x6e69616d,
+        0x00000000,0x0000000a,0x00000016,0x00000020,
+        0x00000022,0x00030003,0x00000001,0x00000136,
+        0x000a0004,0x475f4c47,0x4c474f4f,0x70635f45,
+        0x74735f70,0x5f656c79,0x656e696c,0x7269645f,
+        0x69746365,0x00006576,0x00080004,0x475f4c47,
+        0x4c474f4f,0x6e695f45,0x64756c63,0x69645f65,
+        0x74636572,0x00657669,0x00040005,0x00000004,
+        0x6e69616d,0x00000000,0x00060005,0x00000008,
+        0x505f6c67,0x65567265,0x78657472,0x00000000,
+        0x00060006,0x00000008,0x00000000,0x505f6c67,
+        0x7469736f,0x006e6f69,0x00070006,0x00000008,
+        0x00000001,0x505f6c67,0x746e696f,0x657a6953,
+        0x00000000,0x00030005,0x0000000a,0x00000000,
+        0x00060005,0x0000000e,0x68737550,0x736e6f43,
+        0x746e6174,0x00000073,0x00050006,0x0000000e,
+        0x00000000,0x7274616d,0x00007869,0x00030005,
+        0x00000010,0x00000000,0x00040005,0x00000016,
+        0x736f7076,0x00000000,0x00040005,0x00000020,
+        0x6f6c6f63,0x00000072,0x00040005,0x00000022,
+        0x6c6f6376,0x00000000,0x00050048,0x00000008,
+        0x00000000,0x0000000b,0x00000000,0x00050048,
+        0x00000008,0x00000001,0x0000000b,0x00000001,
+        0x00030047,0x00000008,0x00000002,0x00040048,
+        0x0000000e,0x00000000,0x00000005,0x00050048,
+        0x0000000e,0x00000000,0x00000023,0x00000000,
+        0x00050048,0x0000000e,0x00000000,0x00000007,
+        0x00000010,0x00030047,0x0000000e,0x00000002,
+        0x00040047,0x00000016,0x0000001e,0x00000000,
+        0x00040047,0x00000020,0x0000001e,0x00000000,
+        0x00040047,0x00000022,0x0000001e,0x00000001,
+        0x00020013,0x00000002,0x00030021,0x00000003,
+        0x00000002,0x00030016,0x00000006,0x00000020,
+        0x00040017,0x00000007,0x00000006,0x00000004,
+        0x0004001e,0x00000008,0x00000007,0x00000006,
+        0x00040020,0x00000009,0x00000003,0x00000008,
+        0x0004003b,0x00000009,0x0000000a,0x00000003,
+        0x00040015,0x0000000b,0x00000020,0x00000001,
+        0x0004002b,0x0000000b,0x0000000c,0x00000000,
+        0x00040018,0x0000000d,0x00000007,0x00000004,
+        0x0003001e,0x0000000e,0x0000000d,0x00040020,
+        0x0000000f,0x00000009,0x0000000e,0x0004003b,
+        0x0000000f,0x00000010,0x00000009,0x00040020,
+        0x00000011,0x00000009,0x0000000d,0x00040017,
+        0x00000014,0x00000006,0x00000003,0x00040020,
+        0x00000015,0x00000001,0x00000014,0x0004003b,
+        0x00000015,0x00000016,0x00000001,0x0004002b,
+        0x00000006,0x00000018,0x3f800000,0x00040020,
+        0x0000001e,0x00000003,0x00000007,0x0004003b,
+        0x0000001e,0x00000020,0x00000003,0x00040020,
+        0x00000021,0x00000001,0x00000007,0x0004003b,
+        0x00000021,0x00000022,0x00000001,0x00050036,
+        0x00000002,0x00000004,0x00000000,0x00000003,
+        0x000200f8,0x00000005,0x00050041,0x00000011,
+        0x00000012,0x00000010,0x0000000c,0x0004003d,
+        0x0000000d,0x00000013,0x00000012,0x0004003d,
+        0x00000014,0x00000017,0x00000016,0x00050051,
+        0x00000006,0x00000019,0x00000017,0x00000000,
+        0x00050051,0x00000006,0x0000001a,0x00000017,
+        0x00000001,0x00050051,0x00000006,0x0000001b,
+        0x00000017,0x00000002,0x00070050,0x00000007,
+        0x0000001c,0x00000019,0x0000001a,0x0000001b,
+        0x00000018,0x00050091,0x00000007,0x0000001d,
+        0x00000013,0x0000001c,0x00050041,0x0000001e,
+        0x0000001f,0x0000000a,0x0000000c,0x0003003e,
+        0x0000001f,0x0000001d,0x0004003d,0x00000007,
+        0x00000023,0x00000022,0x0003003e,0x00000020,
+        0x00000023,0x000100fd,0x00010038
+    };
+    const uint32_t fragmentShaderSpirv[] = {
+        0x07230203,0x00010000,0x000d0006,0x0000000d,
+        0x00000000,0x00020011,0x00000001,0x0006000b,
+        0x00000001,0x4c534c47,0x6474732e,0x3035342e,
+        0x00000000,0x0003000e,0x00000000,0x00000001,
+        0x0007000f,0x00000004,0x00000004,0x6e69616d,
+        0x00000000,0x00000009,0x0000000b,0x00030010,
+        0x00000004,0x00000007,0x00030003,0x00000001,
+        0x00000136,0x000a0004,0x475f4c47,0x4c474f4f,
+        0x70635f45,0x74735f70,0x5f656c79,0x656e696c,
+        0x7269645f,0x69746365,0x00006576,0x00080004,
+        0x475f4c47,0x4c474f4f,0x6e695f45,0x64756c63,
+        0x69645f65,0x74636572,0x00657669,0x00040005,
+        0x00000004,0x6e69616d,0x00000000,0x00050005,
+        0x00000009,0x67617266,0x6f6c6f43,0x00000072,
+        0x00040005,0x0000000b,0x6f6c6f63,0x00000072,
+        0x00040047,0x00000009,0x0000001e,0x00000000,
+        0x00040047,0x0000000b,0x0000001e,0x00000000,
+        0x00020013,0x00000002,0x00030021,0x00000003,
+        0x00000002,0x00030016,0x00000006,0x00000020,
+        0x00040017,0x00000007,0x00000006,0x00000004,
+        0x00040020,0x00000008,0x00000003,0x00000007,
+        0x0004003b,0x00000008,0x00000009,0x00000003,
+        0x00040020,0x0000000a,0x00000001,0x00000007,
+        0x0004003b,0x0000000a,0x0000000b,0x00000001,
+        0x00050036,0x00000002,0x00000004,0x00000000,
+        0x00000003,0x000200f8,0x00000005,0x0004003d,
+        0x00000007,0x0000000c,0x0000000b,0x0003003e,
+        0x00000009,0x0000000c,0x000100fd,0x00010038
+    };
 } // namespace Shader
 
 static VkPipeline CreateTrianglePipeline(VkDevice device, VkPipelineLayout pipelineLayout, VkRenderPass renderPass, VkPipelineCache pipelineCache)
 {
     if (pipelineLayout == VK_NULL_HANDLE)
-        return VK_NULL_HANDLE;  
+        return VK_NULL_HANDLE;
     if (device == VK_NULL_HANDLE)
         return VK_NULL_HANDLE;
     if (renderPass == VK_NULL_HANDLE)
@@ -302,7 +304,7 @@ static VkPipeline CreateTrianglePipeline(VkDevice device, VkPipelineLayout pipel
 
     bool success = true;
     VkGraphicsPipelineCreateInfo pipelineCreateInfo = {};
-     
+
     VkPipelineShaderStageCreateInfo shaderStages[2] = {};
     shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
     shaderStages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
@@ -310,7 +312,7 @@ static VkPipeline CreateTrianglePipeline(VkDevice device, VkPipelineLayout pipel
     shaderStages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
     shaderStages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
     shaderStages[1].pName = "main";
-    
+
     if (success)
     {
         VkShaderModuleCreateInfo moduleCreateInfo = {};
@@ -391,7 +393,7 @@ static VkPipeline CreateTrianglePipeline(VkDevice device, VkPipelineLayout pipel
         // byte4 vcol;
         VkVertexInputBindingDescription vertexInputBinding = {};
         vertexInputBinding.binding = 0;
-        vertexInputBinding.stride = 16; 
+        vertexInputBinding.stride = 16;
         vertexInputBinding.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
         VkVertexInputAttributeDescription vertexInputAttributes[2];
@@ -423,7 +425,7 @@ static VkPipeline CreateTrianglePipeline(VkDevice device, VkPipelineLayout pipel
         pipelineCreateInfo.pDynamicState = &dynamicState;
 
         success = vkCreateGraphicsPipelines(device, pipelineCache, 1, &pipelineCreateInfo, NULL, &pipeline) == VK_SUCCESS;
-    } 
+    }
 
     if (shaderStages[0].module != VK_NULL_HANDLE)
         vkDestroyShaderModule(device, shaderStages[0].module, NULL);
@@ -443,7 +445,7 @@ public:
     virtual bool GetUsesReverseZ() { return true; }
     virtual void DrawSimpleTriangles(const float worldMatrix[16], int triangleCount, const void* verticesFloat3Byte4);
     virtual void* BeginModifyTexture(void* textureHandle, int textureWidth, int textureHeight, int* outRowPitch);
-    virtual void EndModifyTexture(void* textureHandle, int textureWidth, int textureHeight, int comps,int rowPitch, void* dataPtr);
+    virtual void EndModifyTexture(void* textureHandle, int textureWidth, int textureHeight, int rowPitch, int part, void* dataPtr);
     virtual void* BeginModifyVertexBuffer(void* bufferHandle, size_t* outBufferSize);
     virtual void EndModifyVertexBuffer(void* bufferHandle);
 
@@ -637,8 +639,8 @@ void RenderAPI_Vulkan::GarbageCollect(bool force /*= false*/)
 
 void RenderAPI_Vulkan::DrawSimpleTriangles(const float worldMatrix[16], int triangleCount, const void* verticesFloat3Byte4)
 {
-     // not needed, we already configured the event to be inside a render pass
-     //   m_UnityVulkan->EnsureInsideRenderPass();
+    // not needed, we already configured the event to be inside a render pass
+    //   m_UnityVulkan->EnsureInsideRenderPass();
 
     UnityVulkanRecordingState recordingState;
     if (!m_UnityVulkan->CommandRecordingState(&recordingState, kUnityVulkanGraphicsQueueAccess_DontCare))
@@ -651,7 +653,7 @@ void RenderAPI_Vulkan::DrawSimpleTriangles(const float worldMatrix[16], int tria
             m_TrianglePipelineLayout = CreateTrianglePipelineLayout(m_Instance.device);
 
         m_TrianglePipeline = CreateTrianglePipeline(m_Instance.device, m_TrianglePipelineLayout, recordingState.renderPass, VK_NULL_HANDLE);
-		m_TrianglePipelineRenderPass = recordingState.renderPass;
+        m_TrianglePipelineRenderPass = recordingState.renderPass;
     }
 
     if (m_TrianglePipeline != VK_NULL_HANDLE && m_TrianglePipelineLayout != VK_NULL_HANDLE)
@@ -686,35 +688,55 @@ void RenderAPI_Vulkan::DrawSimpleTriangles(const float worldMatrix[16], int tria
 
 void* RenderAPI_Vulkan::BeginModifyTexture(void* textureHandle, int textureWidth, int textureHeight, int* outRowPitch)
 {
-    *outRowPitch = textureWidth * 4;
+    //*outRowPitch = textureWidth * 4;
     const size_t stagingBufferSizeRequirements = *outRowPitch * textureHeight;
 
-    UnityVulkanRecordingState recordingState;
-    if (!m_UnityVulkan->CommandRecordingState(&recordingState, kUnityVulkanGraphicsQueueAccess_DontCare))
-        return NULL;
+    if (m_TextureStagingBuffer.sizeInBytes != stagingBufferSizeRequirements)
+    {
+        UnityVulkanRecordingState recordingState;
+        if (!m_UnityVulkan->CommandRecordingState(&recordingState, kUnityVulkanGraphicsQueueAccess_DontCare))
+        {
+            //LogManager::Instance()->LogMessage("BeginModifyTexture ERROR 1");
+            return NULL;
+        }
 
-    SafeDestroy(recordingState.currentFrameNumber, m_TextureStagingBuffer);
-    m_TextureStagingBuffer = VulkanBuffer();
-    if (!CreateVulkanBuffer(stagingBufferSizeRequirements, &m_TextureStagingBuffer, VK_BUFFER_USAGE_TRANSFER_SRC_BIT))
-        return NULL;
+        SafeDestroy(recordingState.currentFrameNumber, m_TextureStagingBuffer);
+        GarbageCollect();
+
+        m_TextureStagingBuffer = VulkanBuffer();
+
+        if (!CreateVulkanBuffer(stagingBufferSizeRequirements, &m_TextureStagingBuffer, VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT))
+        {
+            //LogManager::Instance()->LogMessage("BeginModifyTexture ERROR 2");
+            return NULL;
+        }
+    }
 
     return m_TextureStagingBuffer.mapped;
 }
 
-void RenderAPI_Vulkan::EndModifyTexture(void* textureHandle, int textureWidth, int textureHeight, int comps, int rowPitch, void* dataPtr)
+void RenderAPI_Vulkan::EndModifyTexture(void* textureHandle, int textureWidth, int textureHeight, int rowPitch, int part, void* dataPtr)
 {
-	LogMessage("RenderAPI_Vulkan::EndModifyTexture()", ELL_INFO);
-	// cannot do resource uploads inside renderpass
+    // copy pixel data
+    memcpy(m_TextureStagingBuffer.mapped, dataPtr, m_TextureStagingBuffer.sizeInBytes);
+
+    // cannot do resource uploads inside renderpass
     m_UnityVulkan->EnsureOutsideRenderPass();
 
     UnityVulkanImage image;
     if (!m_UnityVulkan->AccessTexture(textureHandle, UnityVulkanWholeImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
         VK_PIPELINE_STAGE_TRANSFER_BIT, VK_ACCESS_TRANSFER_WRITE_BIT, kUnityVulkanResourceAccess_PipelineBarrier, &image))
+    {
+        //LogManager::Instance()->LogMessage("EndModifyTexture ERROR 1");
         return;
+    }
 
     UnityVulkanRecordingState recordingState;
     if (!m_UnityVulkan->CommandRecordingState(&recordingState, kUnityVulkanGraphicsQueueAccess_DontCare))
+    {
+        //LogManager::Instance()->LogMessage("EndModifyTexture ERROR 2");
         return;
+    }
 
     VkBufferImageCopy region;
     region.bufferImageHeight = 0;
@@ -730,12 +752,14 @@ void RenderAPI_Vulkan::EndModifyTexture(void* textureHandle, int textureWidth, i
     region.imageSubresource.baseArrayLayer = 0;
     region.imageSubresource.layerCount = 1;
     region.imageSubresource.mipLevel = 0;
+
     vkCmdCopyBufferToImage(recordingState.commandBuffer, m_TextureStagingBuffer.buffer, image.image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
-	LogMessage("RenderAPI_Vulkan::vkCmdCopyBufferToImage()", ELL_INFO);
 }
 
 void* RenderAPI_Vulkan::BeginModifyVertexBuffer(void* bufferHandle, size_t* outBufferSize)
 {
+    return NULL;
+
     UnityVulkanRecordingState recordingState;
     if (!m_UnityVulkan->CommandRecordingState(&recordingState, kUnityVulkanGraphicsQueueAccess_DontCare))
         return NULL;
@@ -749,23 +773,19 @@ void* RenderAPI_Vulkan::BeginModifyVertexBuffer(void* bufferHandle, size_t* outB
     if (!bufferInfo.memory.mapped)
         return NULL;
 
-    UnityVulkanBuffer src;
-    if (!m_UnityVulkan->AccessBuffer(bufferHandle, VK_PIPELINE_STAGE_HOST_BIT, VK_ACCESS_HOST_READ_BIT, kUnityVulkanResourceAccess_PipelineBarrier, &src))
+    // We don't want to start modifying a resource that might still be used by the GPU,
+    // so we can use kUnityVulkanResourceAccess_Recreate to recreate it while still keeping the old one alive if it's in use.
+    UnityVulkanBuffer recreatedBuffer;
+    if (!m_UnityVulkan->AccessBuffer(bufferHandle, VK_PIPELINE_STAGE_HOST_BIT, VK_ACCESS_HOST_WRITE_BIT, kUnityVulkanResourceAccess_Recreate, &recreatedBuffer))
         return NULL;
 
-    UnityVulkanBuffer dst;
-    if (!m_UnityVulkan->AccessBuffer(bufferHandle, VK_PIPELINE_STAGE_HOST_BIT, VK_ACCESS_HOST_WRITE_BIT, kUnityVulkanResourceAccess_PipelineBarrier, &dst))
-        return NULL;
-        
-    // read might be slow because it's not cached
-    // can't use GPU transfer here because is not marked as transfer src
-    memcpy(dst.memory.mapped, src.memory.mapped, bufferInfo.sizeInBytes);
-
-    return dst.memory.mapped;
+    // We don't care about the previous contents of this vertex buffer so we can return the mapped pointer to the new resource memory 
+    return recreatedBuffer.memory.mapped;
 }
 
 void RenderAPI_Vulkan::EndModifyVertexBuffer(void* bufferHandle)
 {
+    return;
     // cannot do resource uploads inside renderpass, but we know that the texture modification is done first and that already ends the renderpass
     // m_UnityVulkan->EnsureOutsideRenderPass(); 
 

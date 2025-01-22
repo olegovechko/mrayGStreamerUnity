@@ -231,6 +231,9 @@
     <ClInclude Include="..\sources\GstAudioSampler.h">
       <Filter>Source Files\Players</Filter>
     </ClInclude>
+    <ClInclude Include="..\sources\RendererHelpers.h">
+      <Filter>Source Files\API</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="../sources/GStreamerCore.cpp">
@@ -370,6 +373,39 @@
     </ClCompile>
     <ClCompile Include="..\sources\GstAudioSampler.cpp">
       <Filter>Source Files\Players</Filter>
+    </ClCompile>
+    <ClCompile Include="..\includes\gl3w\gl3w.c">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sources\GstRendererAPI.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="..\includes\RenderAPI.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="..\includes\RenderAPI_D3D9.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="..\includes\RenderAPI_D3D11.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="..\includes\RenderAPI_D3D12.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="..\includes\RenderAPI_OpenGL2.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="..\includes\RenderAPI_OpenGLCoreES.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="..\includes\RenderAPI_Vulkan.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="..\includes\UnityGraphicsDevice.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sources\RendererHelpers.cpp">
+      <Filter>Source Files\API</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

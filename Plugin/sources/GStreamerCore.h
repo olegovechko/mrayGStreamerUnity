@@ -15,9 +15,13 @@
 #ifndef __GStreamerCore__
 #define __GStreamerCore__
 
-#include "IThread.h"
+//#include "IThread.h"
 #include <gst/gst.h>
 #include "mTypes.h"
+
+//#if defined (__ANDROID__)
+#include "IThread.h"
+//#endif
 
 
 namespace mray
@@ -31,8 +35,10 @@ protected:
 	static GStreamerCore* m_instance;
 	static uint m_refCount;
 
+//#if defined (__ANDROID__)
 	OS::IThread* m_mainLoopThread;
 	OS::IThreadFunction* m_threadFunc;
+//#endif
 
 	GThread *gub_main_loop_thread ;
 	GMainLoop *gub_main_loop ;

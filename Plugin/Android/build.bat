@@ -1,3 +1,5 @@
 echo use ndk r17c to compile on windows
 
-%ANDROID_NDK_ROOT%/ndk-build NDK_PROJECT_PATH=. NDK_APPLICATION_MK=jni/Application.mk 
+rem C:/Android/AndroidPlayer/NDK/ndk-build NDK_PROJECT_PATH=. NDK_APPLICATION_MK=jni/Application.mk
+
+C:/Android/Sdk/ndk/17.2.4988734/ndk-build NDK_PROJECT_PATH=. NDK_APPLICATION_MK=jni/Application.mk 

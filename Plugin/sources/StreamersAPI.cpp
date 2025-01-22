@@ -14,6 +14,8 @@
 #include "LocalAudioGrabber.h"
 #include "NetworkAudioGrabber.h"
 #include "UnityAudioGrabber.h"
+#include "UnityImageGrabber.h"
+
 
 #include "GStreamerCore.h"
 #include "GraphicsInclude.h"

@@ -19,11 +19,10 @@ LOCAL_SRC_FILES         :=  $(EXT_SOURCE_PATH)/ImageInfo.cpp\
 							$(PLUGIN_SOURCE_PATH)/UnityHelpers.cpp\
 							$(PLUGIN_SOURCE_PATH)/RendererHelpers.cpp
 
-
-#LOCAL_C_INCLUDES += $(NDK_ROOT)/sources/third_party/vulkan/src/include
-#LOCAL_CPPFLAGS += -DSUPPORT_VULKAN=1
-#LOCAL_CPPFLAGS += -DSUPPORT_OPENGL_ES=1
-#LOCAL_SRC_FILES += $(EXT_SOURCE_PATH)/RenderAPI_Vulkan.cpp
+LOCAL_C_INCLUDES += $(NDK_ROOT)/sources/third_party/vulkan/src/include
+LOCAL_CPPFLAGS += -DSUPPORT_VULKAN=1
+LOCAL_CPPFLAGS += -DSUPPORT_OPENGL_ES=1
+LOCAL_SRC_FILES += $(EXT_SOURCE_PATH)/RenderAPI_Vulkan.cpp
 
 LOCAL_LDLIBS            := -llog -lGLESv2
 include $(BUILD_SHARED_LIBRARY)

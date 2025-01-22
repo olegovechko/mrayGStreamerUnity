@@ -6,6 +6,7 @@
 
 #include "IGStreamerStreamer.h"
 #include "IAudioGrabber.h"
+#include <string>
 
 namespace mray
 {

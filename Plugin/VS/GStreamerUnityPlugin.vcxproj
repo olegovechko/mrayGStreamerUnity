@@ -22,32 +22,32 @@
     <ProjectGuid>{8FB9AD24-E1C7-4C44-BD0E-CA167AF44482}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>GStreamerUnityPlugin</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)/Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|X64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|X64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -129,8 +129,8 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>USE_UNITY_GRABBER;USE_UNITY_NETWORK;WIN32;_DEBUG;_WINDOWS;_USRDLL;GSTREAMERUNITYPLUGIN_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>./;../includes;../includes/Win32;../sources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>USE_UNITY_GRABBER;_USE_UNITY_NETWORK;WIN32;_DEBUG;_WINDOWS;_USRDLL;GSTREAMERUNITYPLUGIN_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\DirectX-Headers-main\include\directx;./;../includes;../includes/Win32;C:\VulkanSDK\1.3.290.0\Include;../sources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -163,8 +163,8 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>USE_UNITY_GRABBER;USE_UNITY_NETWORK;WIN32;NDEBUG;_WINDOWS;_USRDLL;GSTREAMERUNITYPLUGIN_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>./;../includes;../includes/Win32;../sources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>USE_UNITY_GRABBER;_USE_UNITY_NETWORK;WIN32;NDEBUG;_WINDOWS;_USRDLL;GSTREAMERUNITYPLUGIN_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\DirectX-Headers-main\include\directx;./;../includes;../includes/Win32;C:\VulkanSDK\1.3.290.0\Include;../sources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -242,6 +242,7 @@
     <ClInclude Include="..\sources\GZipCompress.h" />
     <ClInclude Include="..\sources\IAudioGrabber.h" />
     <ClInclude Include="..\sources\NetworkAudioGrabber.h" />
+    <ClInclude Include="..\sources\RendererHelpers.h" />
     <ClInclude Include="..\sources\UnityAudioGrabber.h" />
     <ClInclude Include="..\sources\LocalAudioGrabber.h" />
     <ClInclude Include="..\sources\rtp.h" />
@@ -266,7 +267,10 @@
     <ClCompile Include="../includes/Win32/WinThread.cpp" />
     <ClCompile Include="../includes/Win32/WinThreadManager.cpp" />
     <ClCompile Include="../sources/PlayersAPI.cpp" />
-    <ClCompile Include="../sources/StreamersAPI.cpp" />
+    <ClCompile Include="../sources/StreamersAPI.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|X64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="../sources/UnityHelpers.cpp" />
     <ClCompile Include="../sources/UnityImageGrabber.cpp" />
     <ClCompile Include="../sources/VideoAppSinkHandler.cpp">
@@ -276,6 +280,15 @@
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|X64'">Disabled</Optimization>
     </ClCompile>
     <ClCompile Include="../sources/IAppSinkHandler.cpp" />
+    <ClCompile Include="..\includes\gl3w\gl3w.c" />
+    <ClCompile Include="..\includes\RenderAPI.cpp" />
+    <ClCompile Include="..\includes\RenderAPI_D3D11.cpp" />
+    <ClCompile Include="..\includes\RenderAPI_D3D12.cpp" />
+    <ClCompile Include="..\includes\RenderAPI_D3D9.cpp" />
+    <ClCompile Include="..\includes\RenderAPI_OpenGL2.cpp" />
+    <ClCompile Include="..\includes\RenderAPI_OpenGLCoreES.cpp" />
+    <ClCompile Include="..\includes\RenderAPI_Vulkan.cpp" />
+    <ClCompile Include="..\includes\UnityGraphicsDevice.cpp" />
     <ClCompile Include="..\sources\CMyListener.cpp" />
     <ClCompile Include="..\sources\CMyUDPSink.cpp" />
     <ClCompile Include="..\sources\CMyUDPSrc.cpp" />
@@ -289,6 +302,8 @@
     </ClCompile>
     <ClCompile Include="..\sources\GstAppNetAudioStreamer.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|X64'">Disabled</Optimization>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|X64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\sources\GstAudioSampler.cpp" />
     <ClCompile Include="..\sources\GstCustomDataPlayer.cpp" />
@@ -296,17 +311,36 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|X64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\sources\GstCustomDataStreamer.cpp" />
-    <ClCompile Include="..\sources\GstCustomVideoStreamer.cpp" />
-    <ClCompile Include="..\sources\GstNetworkVideoStreamer.cpp" />
+    <ClCompile Include="..\sources\GstCustomDataStreamer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|X64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\sources\GstCustomVideoStreamer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|X64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\sources\GstNetworkVideoStreamer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|X64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\sources\GstNetworkAudioPlayer.cpp" />
-    <ClCompile Include="..\sources\GstNetworkAudioStreamer.cpp" />
+    <ClCompile Include="..\sources\GstNetworkAudioStreamer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|X64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\sources\GstNetworkMultipleVideoPlayer.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|X64'">Disabled</Optimization>
     </ClCompile>
     <ClCompile Include="..\sources\GstNetworkVideoPlayer.cpp" />
+    <ClCompile Include="..\sources\GstRendererAPI.cpp" />
     <ClCompile Include="..\sources\GZipCompress.cpp" />
     <ClCompile Include="..\sources\NetworkAudioGrabber.cpp" />
+    <ClCompile Include="..\sources\RendererHelpers.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">Disabled</Optimization>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Disabled</Optimization>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|X64'">Disabled</Optimization>
+    </ClCompile>
     <ClCompile Include="..\sources\UnityAudioGrabber.cpp" />
     <ClCompile Include="..\sources\LocalAudioGrabber.cpp" />
     <ClCompile Include="..\sources\rtp.cpp" />
