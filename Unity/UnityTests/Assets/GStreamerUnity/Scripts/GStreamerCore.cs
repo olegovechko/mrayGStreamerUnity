@@ -136,8 +136,8 @@ public class GStreamerCore {
                 //log_handler = (string message) =>  Debug.Log("mrayGST: " + message);
 #if UNITY_ANDROID && !UNITY_EDITOR
 #else
-                mray_SetDebugFunction(log_handler);
-                mray_Renderer_SetDebugFunction(log_handler);
+                //mray_SetDebugFunction(log_handler);
+                //mray_Renderer_SetDebugFunction(log_handler);
 #endif
                 Debug.Log("GStreamer Initializing");
                 mray_gstreamer_initialize();

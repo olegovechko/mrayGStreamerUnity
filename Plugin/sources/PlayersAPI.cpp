@@ -3,6 +3,7 @@
 #include "GStreamerCore.h"
 #include "GraphicsInclude.h"
 #include "PixelUtil.h"
+#include "RendererHelpers.h"
 
 #include "INetwork.h"
 #include "IMutex.h"
@@ -287,6 +288,18 @@ extern "C" UNITY_INTERFACE_EXPORT bool mray_gst_customPlayerCreateStream(GstCust
 }
 
 
+extern "C" UNITY_INTERFACE_EXPORT void mray_gst_customPlayerBlitImage(
+	GstCustomVideoPlayer* p, void* _TextureNativePtr, int _UnityTextureWidth,
+	int _UnityTextureHeight) {
+	if (p == NULL || !_TextureNativePtr) return;
+
+	const video::ImageInfo* ifo = p->GetLastFrame();
+
+	if (ifo) {
+		BlitImage(ifo, _TextureNativePtr, _UnityTextureWidth,
+			_UnityTextureHeight);
+	}
+}
 
 extern "C" UNITY_INTERFACE_EXPORT bool mray_gst_customPlayerCopyFrame(GstCustomVideoPlayer* p, video::ImageInfo* target)
 {

@@ -3,6 +3,7 @@
 #include "PixelUtil.h"
 #include "ImageInfo.h"
 #include "RendererHelpers.h"
+#include "PlayersAPI.h"
 
 #include <vector>
 #include <memory.h>
@@ -26,9 +27,16 @@ static void __stdcall mray_gst_customPlayerBlitImageNativeEvent(int eventID)
 	//LogMessage("mray_gst_customPlayerBlitImageNativeEvent()", ELL_INFO);
 	for (int i = 0; i < __multiNetRequests.size(); ++i)
 	{
+#ifdef __ANDROID__
 		MultiNetRenderRequest r = __multiNetRequests[i];
 		if(r.p)
 			BlitImage((video::ImageInfo*)r.p, r._TextureNativePtr, r._UnityTextureWidth, r._UnityTextureHeight);
+#else
+		MultiNetRenderRequest r = __multiNetRequests[i];
+		mray_gst_customPlayerBlitImage(
+			(GstCustomVideoPlayer*)r.p, r._TextureNativePtr,
+			r._UnityTextureWidth, r._UnityTextureHeight);
+#endif
 	}
 	__multiNetRequests.clear();
 }

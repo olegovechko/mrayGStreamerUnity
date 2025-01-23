@@ -76,7 +76,6 @@ public class GstImageInfo {
 #else
 	[DllImport(GStreamerCore.DllName, CallingConvention = CallingConvention.Cdecl)]
 #endif    
-	//[DllImport(GStreamerCore.DllName, CallingConvention = CallingConvention.Cdecl)]
     extern static private System.IntPtr mray_gst_ImageInfoBlitImageNativeGLCall(System.IntPtr p, System.IntPtr _TextureNativePtr);
 
     [DllImport(GStreamerCore.DllName, CallingConvention = CallingConvention.Cdecl)]

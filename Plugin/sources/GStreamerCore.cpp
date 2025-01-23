@@ -272,6 +272,7 @@ void GStreamerCore::_Init()
 void GStreamerCore::_loopFunction() {
 	LogMessage(ELL_INFO,"Entering main loop");
 	gub_main_loop = g_main_loop_new(NULL, FALSE);
+	LogMessage(ELL_INFO, "Entering main loop");
 	g_main_loop_run(gub_main_loop);
 	LogMessage(ELL_INFO,"Quitting main loop");
 }
@@ -280,7 +281,7 @@ void GStreamerCore::_loopFunction() {
 void GStreamerCore::_StartLoop()
 {
 
-#if (1) //defined (__ANDROID__)
+#if defined (__ANDROID__)
 	GError* err = 0;
 	gub_main_loop_thread = g_thread_new("GStreamerUnityPlugin Main Thread", gst_main_loop_func, this);
 	if (!gub_main_loop_thread) {
@@ -297,7 +298,7 @@ void GStreamerCore::_StartLoop()
 
 void GStreamerCore::_StopLoop()
 {
-#if (1) //defined (__ANDROID__)
+#if defined (__ANDROID__)
 	if (!gub_main_loop) {
 		return;
 	}

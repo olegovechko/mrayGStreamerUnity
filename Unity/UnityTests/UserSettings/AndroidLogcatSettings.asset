@@ -3,7 +3,7 @@
     "m_SelectedProcess": {
         "deviceId": "2ab3dc41",
         "name": "com.myamens.mrayGStreamer",
-        "processId": 14027,
+        "processId": 6096,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -666,6 +666,12 @@
             "deviceId": "2ab3dc41",
             "name": "com.myamens.mrayGStreamer",
             "processId": 14027,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 6096,
             "exited": false
         }
     ],

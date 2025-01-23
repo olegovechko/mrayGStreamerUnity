@@ -213,11 +213,13 @@ public class GstCustomPlayer:IGstPlayer  {
 		if (_TextureWidth != sz.x || _TextureHeight != sz.y) return;	// For now, only works if the texture has the exact same size as the webview.
 
         //Debug.Log("GstCustomPlayer::BlitTexture()");
-        var frame = mray_gst_customPlayerGetLastFrame(m_Instance);
+#if UNITY_ANDROID && !UNITY_EDITOR        
+		var frame = mray_gst_customPlayerGetLastFrame(m_Instance);
 
         GL.IssuePluginEvent(mray_gst_BlitImageNativeGLCall(frame, _NativeTexturePtr, _TextureWidth, _TextureHeight), 1);
-        //mray_gst_customPlayerBlitImage(m_Instance, _NativeTexturePtr, _TextureWidth, _TextureHeight);	// We pass Unity's width and height values of the texture
-
+#else
+        mray_gst_customPlayerBlitImage(m_Instance, _NativeTexturePtr, _TextureWidth, _TextureHeight);	// We pass Unity's width and height values of the texture
+#endif
 	}
 
 	public bool GrabAudioFrame()
