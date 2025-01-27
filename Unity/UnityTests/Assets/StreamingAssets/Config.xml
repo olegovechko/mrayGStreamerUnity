@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<Config xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <release>false</release>
+  <showFPS>true</showFPS>
+  <useCustomInput>true</useCustomInput>
+  <controllerConnectionCheck>true</controllerConnectionCheck>
+  <map>
+    <pathWindows>D:/Projects/MinNET/Build/MapUI/MapUI.exe</pathWindows>
+    <pathLinux>MapUI.x86_64</pathLinux>
+    <options>-monitor 2</options>
+  </map>
+  <telemetry>
+    <path>C:\Telemetry\</path>
+    <gstreamerProcessWindows>C:/gstreamer/1.0/msvc_x86_64/bin/gst-launch-1.0.exe</gstreamerProcessWindows>
+    <screenRecordingOptions>-e d3d11screencapturesrc ! queue! videoconvert ! x264enc ! h264parse ! mpegtsmux ! filesink location=screen.mp4</screenRecordingOptions>
+    <pathLinux>C:\Telemetry\</pathLinux>
+    <gstreamerProcessLinux>gst-launch-1.0</gstreamerProcessLinux>
+    <screenRecordingOptionsLinux>-e d3d11screencapturesrc ! queue! videoconvert ! x264enc ! h264parse ! mpegtsmux ! filesink location=screen.mp4</screenRecordingOptionsLinux>
+    <tsConvertOptions>filesrc location=INFILENAME ! tsdemux ! "video/x-h265,profile=main" ! h265parse ! mp4mux ! filesink location=OUTFILENAME</tsConvertOptions>
+  </telemetry>
+  <network>
+    <address>127.0.0.1</address>
+    <port>9999</port>
+    <addressNMEA>127.0.0.1</addressNMEA>
+    <portNMEA>9999</portNMEA>
+    <addressJ1>127.0.0.1</addressJ1>
+    <addressJ2>127.0.0.1</addressJ2>
+    <addressWorld>8.8.8.8</addressWorld>
+    <addressInternalGPS>127.0.0.1</addressInternalGPS>
+    <portInternalGPS>9907</portInternalGPS>
+  </network>
+  <cameras>
+    <camera1>rtspsrc location=rtsp://192.168.15.184/live/0</camera1>
+    <camera2>rtspsrc location=rtsp://192.168.15.109/live/1</camera2>
+    <camera3>rtspsrc location=rtsp://192.168.15.109/live/1</camera3>
+    <camera4>rtspsrc location=rtsp://192.168.15.109/live/1</camera4>
+    <optionsCamera1> latency=0 ! decodebin ! videoconvert ! video/x-raw,format=RGB ! </optionsCamera1>
+    <optionsCamera2> latency=0 ! decodebin ! videoconvert ! video/x-raw,format=RGB ! </optionsCamera2>
+    <optionsCamera3> latency=0 ! decodebin ! videoconvert ! video/x-raw,format=RGB ! </optionsCamera3>
+    <optionsCamera4> latency=0 ! decodebin ! videoconvert ! video/x-raw,format=RGB ! </optionsCamera4>
+    <optionsSufix>appsink name=videoSink sync=false</optionsSufix>
+  </cameras>
+</Config>

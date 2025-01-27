@@ -3,7 +3,7 @@
     "m_SelectedProcess": {
         "deviceId": "2ab3dc41",
         "name": "com.myamens.mrayGStreamer",
-        "processId": 6096,
+        "processId": 677,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -672,6 +672,120 @@
             "deviceId": "2ab3dc41",
             "name": "com.myamens.mrayGStreamer",
             "processId": 6096,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 7520,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 15095,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 16126,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 27795,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 30268,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 31418,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 1701,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 4191,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 25036,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 28693,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 30477,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 25368,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 16625,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 26443,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 6308,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 6545,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 11336,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 18875,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 677,
             "exited": false
         }
     ],

@@ -12,7 +12,7 @@ namespace TankSim.UI
         private GameObject playerPrefab;
 
         [SerializeField]
-        private int cameraId = 0;
+        public int cameraId = 0;
 
         [SerializeField]
         private Transform parentAttach;
@@ -32,10 +32,10 @@ namespace TankSim.UI
         public TMP_Text FPSLabel => fpsLabel;
 
         private string pipeline => 
-            cameraId == 0 ? Config.Instance.cameras.camera1 + Config.Instance.cameras.optionsCamera1 :
+            (cameraId == 0 ? Config.Instance.cameras.camera1 + Config.Instance.cameras.optionsCamera1 :
             cameraId == 1 ? Config.Instance.cameras.camera2 + Config.Instance.cameras.optionsCamera2:
             cameraId == 2 ? Config.Instance.cameras.camera3 + Config.Instance.cameras.optionsCamera3:
-                Config.Instance.cameras.camera4 + Config.Instance.cameras.optionsCamera4;
+                Config.Instance.cameras.camera4) + Config.Instance.cameras.optionsSufix;
 
         private void OnEnable()
         {

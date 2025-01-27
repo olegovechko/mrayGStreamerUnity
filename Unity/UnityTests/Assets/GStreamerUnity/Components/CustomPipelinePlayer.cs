@@ -2,33 +2,43 @@
 using System.Collections;
 using System;
 using UnityEngine.UI;
+using TankSim;
 
 [RequireComponent(typeof(GstCustomTexture))]
 public class CustomPipelinePlayer : MonoBehaviour {
 
 	GstCustomTexture m_Texture;
 
-	public Texture2D BlittedImage;
+	//public Texture2D BlittedImage;
+
+	public RawImage rawImage;
 
 	public Material TargetMaterial;
 
 	public string pipeline = "";
 
-	public int FPS => 0;
-	public bool IsPlaying => false;
-	public long LastFrameMillis => 0;
+	public int FPS => Telemetry.Now_Millis - lastFrameTime > 1000 ? 0 : 
+		(frameTime > 0 ? 1000 / (int)frameTime : 0);
+	public bool IsPlaying => isPlaying;
+	public long LastFrameMillis => lastFrameTime;
 	public Rect BlitRect=new Rect(0,0,1,1);
 	//GstImageInfo _img;
 
 	public long position;
 	public long duration;
 	bool _newFrame=false;
+	long lastFrameTime = 0;
+	long frameTime = 0;
+	bool isPlaying = false;
+
     // Use this for initialization
     void Start () {
 		m_Texture = gameObject.GetComponent<GstCustomTexture>();
 		m_Texture.Initialize ();
         
-		m_Texture.SetPipeline (pipeline+ "appsink name=videoSink sync=false");
+		//m_Texture.SetPipeline (pipeline+ "appsink name=videoSink sync=false");
+		Debug.Log($"SetPipeline --> {pipeline}");
+		m_Texture.SetPipeline (pipeline);
 		m_Texture.Player.CreateStream ();
 		m_Texture.Player.Play ();
 
@@ -42,6 +52,7 @@ public class CustomPipelinePlayer : MonoBehaviour {
 		BlittedImage.wrapMode=TextureWrapMode.Clamp;
         BlittedImage.Apply();*/
 
+		lastFrameTime = Telemetry.Now_Millis;
 
         //yield return StartCoroutine("CallPluginAtEndOfFrames");
     }
@@ -49,6 +60,16 @@ public class CustomPipelinePlayer : MonoBehaviour {
     {
         if (TargetMaterial != null)
             TargetMaterial.mainTexture = m_Texture.PlayerTexture()[0];
+
+		if (rawImage != null)
+		{
+			rawImage.texture = m_Texture.PlayerTexture()[0];
+		}
+
+		frameTime = (frameTime + (Telemetry.Now_Millis - lastFrameTime)) / 2; 
+		lastFrameTime = Telemetry.Now_Millis;
+		isPlaying = true;
+
         /*
         //m_Texture.Player.CopyFrame (_img);
         float w=m_Texture.Player.FrameSizeImage.x;
@@ -88,6 +109,7 @@ public class CustomPipelinePlayer : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
+		/*
         position =m_Texture.Player.GetPosition ()/1000;
 		duration=m_Texture.Player.GetDuration ()/1000;
 
@@ -108,5 +130,6 @@ public class CustomPipelinePlayer : MonoBehaviour {
 
 		if (Input.GetKeyDown (KeyCode.P))
 			m_Texture.Play ();
+		*/
 	}
 }
