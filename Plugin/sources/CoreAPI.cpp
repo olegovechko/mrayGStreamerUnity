@@ -18,6 +18,11 @@
 #include "Android/AndroidThreadManager.h"
 #endif
 
+#ifdef __linux__
+#include "OSX/OSXThreadManager.h" // pthreads
+#endif
+
+
 #endif
 #endif
 #include <vector>
@@ -35,17 +40,12 @@ EXPORT_CDECL UNITY_INTERFACE_EXPORT bool mray_gstreamer_initialize()
 #ifdef WIN32
 		new OS::WinThreadManager();
 		new network::Win32Network();
-#else 
-#ifdef __APPLE__
-        new OS::OSXThreadManager();
-#else
-#ifdef __ANDROID__
+#elif defined(__APPLE__)
+		new OS::OSXThreadManager();
+#elif defined(__ANDROID__)
 		new OS::AndroidThreadManager();
-
-
-#endif
-
-#endif
+#elif defined(__linux__)
+		new OS::OSXThreadManager(); // pthreads like OSX
 #endif
 		LogMessage(ELL_INFO,"Initializing GStreamer Engine - Done");
 	}

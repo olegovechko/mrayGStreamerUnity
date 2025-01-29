@@ -27,6 +27,11 @@
 #define  __int64 long long
 #endif
 
+#ifdef __linux__
+#define  __int64 long long
+#endif
+
+
 namespace mray
 {
 namespace video

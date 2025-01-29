@@ -9,7 +9,7 @@
 
 #include "IVideoGrabber.h"
 #include "CMySrc.h"
-#include "CMyUDPSrc.h"
+//#include "CMyUDPSrc.h"
 #include "CMyUDPSink.h"
 
 #include "IThreadManager.h"

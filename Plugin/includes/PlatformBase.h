@@ -28,6 +28,8 @@
 #elif defined(__EMSCRIPTEN__)
 	// this is already defined in Unity 5.6
 	#define UNITY_WEBGL 1
+#elif defined(__linux__)
+	#define UNITY_LINUX 1
 #else
 	#error "Unknown platform!"
 #endif
@@ -54,16 +56,18 @@
 	#ifndef SUPPORT_VULKAN
 		#define SUPPORT_VULKAN 0
 	#endif
-#elif UNITY_OSX || UNITY_LINUX
+#elif UNITY_OSX 
 	#define SUPPORT_OPENGL_UNIFIED 1
 	#define SUPPORT_OPENGL_CORE 1
+#elif UNITY_LINUX
+	#define SUPPORT_OPENGL_UNIFIED 1
+	#define SUPPORT_OPENGL_CORE 1
+	#define SUPPORT_VULKAN 1  // Requires Vulkan SDK to be installed
 #endif
 
 #if UNITY_IPHONE || UNITY_OSX
 	#define SUPPORT_METAL 1
 #endif
-
-
 
 // COM-like Release macro
 #ifndef SAFE_RELEASE

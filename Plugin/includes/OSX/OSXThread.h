@@ -6,6 +6,10 @@
 #include <IThread.h>
 #include <pthread.h>
 
+#ifdef __linux__ 
+#include <signal.h>
+#endif
+
 namespace mray{
 namespace OS{
 

@@ -13,6 +13,13 @@
 #ifdef __ANDROID__
 #define __stdcall
 #endif
+
+#ifdef __linux__
+#define __stdcall
+#include <cstdint>
+#include <stdarg.h>
+#endif
+
 namespace mray
 {
 	namespace video
