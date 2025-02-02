@@ -21,7 +21,9 @@ UnityImageGrabber::UnityImageGrabber()
 
 UnityImageGrabber::~UnityImageGrabber()
 {
-    delete m_mutex;
+	if (m_mutex)
+		delete m_mutex;
+	m_mutex = 0;
 }
 
 

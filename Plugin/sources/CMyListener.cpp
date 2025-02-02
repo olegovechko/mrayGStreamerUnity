@@ -122,6 +122,7 @@ gst_my_listener_finalize(GObject * object)
 	if (sink->listeners)
 	{
 		delete sink->listeners;
+		sink->listeners = 0;
 	}
 	G_OBJECT_CLASS(parent_class)->finalize(object);
 }

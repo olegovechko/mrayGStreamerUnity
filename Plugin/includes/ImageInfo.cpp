@@ -18,11 +18,17 @@ ImageInfo::ImageInfo():format(EPixel_LUMINANCE8),
 	tmpBuffer = 0;
 }
 ImageInfo::~ImageInfo(){
-	if(imageData && autoDel)
-		delete [] imageData;
+	if (imageData && autoDel)
+	{
+		delete[] imageData;
+		imageData = 0;
+	}
 
 	if (tmpBuffer)
+	{
 		delete tmpBuffer;
+		tmpBuffer = 0;
+	}
 }
 
 int ImageInfo::getPitch()const{
@@ -30,10 +36,13 @@ int ImageInfo::getPitch()const{
 }
 
 void ImageInfo::clear(){
-	delete [] imageData;
-	imageDataSize=0;
-	imageData=0;
-	Size = Vector2d(0,0);
+	if (imageData)
+	{
+		delete[] imageData;
+	}
+	imageDataSize = 0;
+	imageData = 0;
+	Size = Vector2d(0, 0);
 }
 
 void ImageInfo::setData(const void*data, const Vector2d&size, EPixelFormat format){
@@ -317,8 +326,10 @@ void ImageInfo::FlipImage(bool horizontal,bool vertical)
         memcpy(dstPtr+(Size.y/2+1)*rowPitch,srcPtr+(Size.y/2+1)*rowPitch,rowPitch);
     }
     
-    delete [] imageData;
-    imageData=newData;
+	if (imageData != NULL)
+		delete [] imageData;
+    
+	imageData=newData;
 }
 void ImageInfo::createData(const Vector2d& size, EPixelFormat format){
 	if(Size==size && format == this->format)

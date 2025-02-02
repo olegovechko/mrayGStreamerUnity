@@ -35,8 +35,10 @@ public class mainUI : MonoBehaviour
         if (videoPlayer.cameraId != camID)
         {
             videoPlayer.cameraId = camID;
-            videoPlayer.gameObject.SetActive(false);
-            videoPlayer.gameObject.SetActive(true);
+            if (!videoPlayer.gameObject.activeSelf)
+                videoPlayer.gameObject.SetActive(true);
+            else
+                videoPlayer.play();
         }
     }
 

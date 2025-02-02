@@ -59,10 +59,14 @@ DirectSoundInputStream::~DirectSoundInputStream()
 		((LPDIRECTSOUNDCAPTUREBUFFER)m_captureBuffer)->Release();
 	m_captureBuffer = NULL;
 
-	if(m_dsData->capture)
-		m_dsData->capture->Release();
+	if (m_dsData)
+	{
+		if (m_dsData->capture)
+			m_dsData->capture->Release();
 
-	delete m_dsData;
+		delete m_dsData;
+		m_dsData = NULL;
+	}
 }
 
 void DirectSoundInputStream::ListDevices(std::vector<InputStreamDeviceInfo> &lst)

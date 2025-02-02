@@ -44,7 +44,7 @@ void LogMessage_internal(ELogLevel level,const std::string& msg)
 		m += "Error: ";
 
 	m += msg;
-#if UNITY_WIN
+#if UNITY_WIN || UNITY_LINUX
 	//OutputDebugStringA(m.c_str());
 	LogManager::Instance()->LogMessage(m);
 #elif UNITY_ANDROID

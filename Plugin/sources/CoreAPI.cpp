@@ -58,28 +58,25 @@ EXPORT_CDECL UNITY_INTERFACE_EXPORT void mray_gstreamer_shutdown()
 	video::GStreamerCore::Unref();
 	if (video::GStreamerCore::RefCount() == 0)
     {
-#ifdef WIN32
 
+#ifdef WIN32
 		delete OS::WinThreadManager::getInstancePtr();
 		delete network::Win32Network::getInstancePtr();
-#else
-#ifdef __APPLE__
+#elif defined(__APPLE__)
 		delete OS::OSXThreadManager::getInstancePtr();
-#else
-#ifdef __ANDROID__
+#elif defined(__ANDROID__)
 		delete OS::AndroidThreadManager::getInstancePtr();
+#elif defined(__linux__)
+		delete OS::OSXThreadManager::getInstancePtr();
+#endif
 
-
-#endif
-#endif
-#endif
 	}
 
 }
 
 EXPORT_CDECL UNITY_INTERFACE_EXPORT bool mray_gstreamer_isActive()
 {
-	LogMessage(ELL_INFO, "Checking is active");
+	//LogMessage(ELL_INFO, "Checking is active");
 	return video::GStreamerCore::Instance()!=0;
 
 }

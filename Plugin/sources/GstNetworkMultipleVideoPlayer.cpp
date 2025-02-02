@@ -622,7 +622,9 @@ GstNetworkMultipleVideoPlayer::GstNetworkMultipleVideoPlayer()
 
 GstNetworkMultipleVideoPlayer::~GstNetworkMultipleVideoPlayer()
 {
-	delete m_impl;
+	if (m_impl)
+		delete m_impl;
+	m_impl = 0;
 }
 void GstNetworkMultipleVideoPlayer::SetIPAddress(const std::string& ip, uint videoPort, uint count, uint clockPort, bool rtcp)
 {

@@ -127,7 +127,11 @@ namespace network
 			infoPtr, 0, 
 			WSA_FLAG_OVERLAPPED | 
 			WSA_FLAG_MULTIPOINT_C_LEAF);
-		if (protocolInfo) delete[] protocolInfo;
+		if (protocolInfo)
+		{
+			delete[] protocolInfo;
+			protocolInfo = 0;
+		}
 		if (INVALID_SOCKET == handle)
 		{
 			perror("Win32UDPClient: WSASocket() error");

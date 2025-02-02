@@ -59,8 +59,11 @@ namespace video
 	{
 		Close();
 		GStreamerCore::Instance()->Unref();
-		delete m_data;
-		m_data = 0;
+		if (m_data)
+		{
+			delete m_data;
+			m_data = 0;
+		}
 	}
 
 	bool GstPipelineHandler::CreatePipeline(bool isMasterClock, const std::string& clockIP, uint clockPort)

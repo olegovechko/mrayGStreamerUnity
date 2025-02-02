@@ -67,6 +67,7 @@ public class GstCustomTexture : GstBaseTexture {
     }
 	public override void Destroy ()
 	{
+		StopAllCoroutines();
 		_isDone = true;
 		if (_imageGrabber != null)
 			_imageGrabber.Join ();

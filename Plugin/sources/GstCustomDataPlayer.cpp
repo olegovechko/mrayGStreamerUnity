@@ -34,6 +34,7 @@ namespace video
 			{
 				if (data)
 					delete[] data;
+				data = 0;
 			}
 			uchar* data;
 			int length;
@@ -84,7 +85,11 @@ namespace video
 				delete d;
 			m_data.clear();
 			m_grave.clear();
-			delete m_mutex;
+			if (m_mutex)
+			{
+				delete m_mutex;
+				m_mutex = 0;
+			}
 		}
 
 		static void _DestroyNotify(gpointer       data)
@@ -372,7 +377,9 @@ namespace video
 
 	GstCustomDataPlayer::~GstCustomDataPlayer()
 	{
-		delete m_impl;
+		if (m_impl)
+			delete m_impl;
+		m_impl = 0;
 	}
 
 

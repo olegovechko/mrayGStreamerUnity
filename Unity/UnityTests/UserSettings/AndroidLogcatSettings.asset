@@ -3,7 +3,7 @@
     "m_SelectedProcess": {
         "deviceId": "2ab3dc41",
         "name": "com.myamens.mrayGStreamer",
-        "processId": 677,
+        "processId": 30502,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -786,6 +786,24 @@
             "deviceId": "2ab3dc41",
             "name": "com.myamens.mrayGStreamer",
             "processId": 677,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 1151,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 12737,
+            "exited": false
+        },
+        {
+            "deviceId": "2ab3dc41",
+            "name": "com.myamens.mrayGStreamer",
+            "processId": 30502,
             "exited": false
         }
     ],

@@ -148,7 +148,7 @@ public class GStreamerCore {
     }
     public static void Unref()
 	{
-        refCount--;
+        //refCount--;
         if (refCount <= 0)
         {
             refCount = 0;

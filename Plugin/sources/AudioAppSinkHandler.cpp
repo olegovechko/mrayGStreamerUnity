@@ -26,7 +26,11 @@ AudioAppSinkHandler::AudioAppSinkHandler()
 AudioAppSinkHandler::~AudioAppSinkHandler()
 {
 	Close();
-	delete m_mutex;
+	if (m_mutex)
+	{
+		delete m_mutex;
+		m_mutex = 0;
+	}
 }
 
 void AudioAppSinkHandler::Close()

@@ -280,6 +280,7 @@ void GStreamerCore::_loopFunction() {
 
 void GStreamerCore::_StartLoop()
 {
+	LogMessage(ELL_INFO,"Start loop");
 
 #if defined (__ANDROID__)
 	GError* err = 0;
@@ -298,6 +299,8 @@ void GStreamerCore::_StartLoop()
 
 void GStreamerCore::_StopLoop()
 {
+	LogMessage(ELL_INFO,"Stop loop");
+
 #if defined (__ANDROID__)
 	if (!gub_main_loop) {
 		return;
@@ -325,32 +328,42 @@ void GStreamerCore::_StopLoop()
 void GStreamerCore::Ref()
 {
 	m_refCount++;
+/*
 	if (m_refCount==1)
 	{
 		LogMessage(ELL_INFO,"Initializing GStreamer");
 		m_instance = new GStreamerCore();
 		LogMessage(ELL_INFO,"Initializing GStreamer - Done");
 	}
-
+*/
 }
 
 void GStreamerCore::Unref()
 {
+/*
 	if (m_refCount == 0)
 	{
 		LogMessage(ELL_ERROR,"GStreamerCore::Unref() - unreferencing GStreamer with no reference! ");
 		return;
 	}
-	m_refCount--;
+	//m_refCount--;
 	if (m_refCount == 0)
 	{
-		delete m_instance;
+		if (m_instance)
+			delete m_instance;
 		m_instance = 0;
 	}
+*/
 }
 
 GStreamerCore* GStreamerCore::Instance()
 {
+	if (m_instance == 0)
+	{
+		LogMessage(ELL_INFO, "Initializing GStreamer");
+		m_instance = new GStreamerCore();
+		LogMessage(ELL_INFO, "Initializing GStreamer - Done");
+	}
 	return m_instance;
 }
 

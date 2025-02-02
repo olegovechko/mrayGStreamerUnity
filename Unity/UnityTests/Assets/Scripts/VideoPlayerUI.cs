@@ -79,7 +79,7 @@ namespace TankSim.UI
             yield return null;
         }
 
-        private void play()
+        public void play()
         {
             StartCoroutine(startPlay());
         }

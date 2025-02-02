@@ -46,8 +46,11 @@ public:
 		}
 		~Chunk()
 		{
-			if (autoRemove)
+			if (autoRemove && data)
+			{
 				delete[] data;
+				data = 0;
+			}
 		}
 
 		bool eof()
@@ -72,6 +75,7 @@ public:
 				{
 					memcpy(data, t, pos);
 					delete[] t;
+					t = 0;
 				}
 				length = len + pos;
 			}

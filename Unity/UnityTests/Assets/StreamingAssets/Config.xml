@@ -1,43 +1,88 @@
 <?xml version="1.0"?>
 <Config xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <release>false</release>
-  <showFPS>true</showFPS>
-  <useCustomInput>true</useCustomInput>
+  <release>true</release>
+  <showFPS>false</showFPS>
   <controllerConnectionCheck>true</controllerConnectionCheck>
   <map>
-    <pathWindows>D:/Projects/MinNET/Build/MapUI/MapUI.exe</pathWindows>
+    <pathWindows>MapUI.exe</pathWindows>
     <pathLinux>MapUI.x86_64</pathLinux>
     <options>-monitor 2</options>
   </map>
   <telemetry>
-    <path>C:\Telemetry\</path>
+    <path>D:/Telemetry/</path>
+    <pathLinux>/home/oleg/Documents/Telemetry/</pathLinux>
+    
     <gstreamerProcessWindows>C:/gstreamer/1.0/msvc_x86_64/bin/gst-launch-1.0.exe</gstreamerProcessWindows>
-    <screenRecordingOptions>-e d3d11screencapturesrc ! queue! videoconvert ! x264enc ! h264parse ! mpegtsmux ! filesink location=screen.mp4</screenRecordingOptions>
-    <pathLinux>C:\Telemetry\</pathLinux>
     <gstreamerProcessLinux>gst-launch-1.0</gstreamerProcessLinux>
-    <screenRecordingOptionsLinux>-e d3d11screencapturesrc ! queue! videoconvert ! x264enc ! h264parse ! mpegtsmux ! filesink location=screen.mp4</screenRecordingOptionsLinux>
-    <tsConvertOptions>filesrc location=INFILENAME ! tsdemux ! "video/x-h265,profile=main" ! h265parse ! mp4mux ! filesink location=OUTFILENAME</tsConvertOptions>
+  <!--
+    Windows: 
+      amfh265enc: AMD AMF H.265 Video Encoder
+      mfh265device1enc: Media Foundation AMDh265Encoder
+      mfh265device2enc: Media Foundation HEVCVideoExtensionEncoder
+      mfh265enc: Media Foundation AMDh265Encoder
+      nvh265enc: Encode H.265 video streams using NVCODEC API CUDA Mode
+      nvd3d11h265enc: Encode H.265 video streams using NVCODEC API Direct3D11 Mode
+    Linux
+      x264enc
+      vah265enc
+
+    <screenRecordingOptionsLinux>ximagesrc display-name=\":0\" ! videoconvert ! vah265enc bitrate=2048 ! mpegtsmux ! filesink location=</screenRecordingOptionsLinux>
+
+      // final convert
+      gst-launch-1.0 filesrc location=screen.ts ! tsdemux ! "video/x-h265,profile=main" ! h265parse ! mp4mux ! filesink location=screen.mp4
+  -->   
+    <screenRecordingOptions>d3d12screencapturesrc ! videoconvert ! mfh265enc bitrate=2048 ! mpegtsmux ! filesink location=</screenRecordingOptions>
+    <screenRecordingOptionsLinux>ximagesrc display-name=\":0\" endx=3840 use-damage=false ! videoconvert ! videoscale ! video/x-raw,width=1920,height=1080 ! vah265enc bitrate=0 ! mpegtsmux ! filesink location=</screenRecordingOptionsLinux>
+  
+  <!--  
+    <tsConvertOptions>filesrc location=INFILENAME ! tsdemux ! "video/x-h265,profile=main" ! h265parse ! mp4mux ! filesink location=OUTFILENAME</tsConvertOptions> 
+  -->
+    <tsConvertOptions>filesrc location=INFILENAME ! tsparse ! tsdemux ! h265parse ! mp4mux ! filesink location=OUTFILENAME</tsConvertOptions> 
   </telemetry>
   <network>
-    <address>127.0.0.1</address>
-    <port>9999</port>
-    <addressNMEA>127.0.0.1</addressNMEA>
-    <portNMEA>9999</portNMEA>
-    <addressJ1>127.0.0.1</addressJ1>
-    <addressJ2>127.0.0.1</addressJ2>
+    <address>100.106.67.21</address>
+    <port>12345</port>
+    <addressNMEA>100.67.37.39</addressNMEA>
+    <portNMEA>12346</portNMEA>
+
+    <addressJ1>100.106.67.21</addressJ1>
+    <addressJ2>100.67.37.39</addressJ2>
     <addressWorld>8.8.8.8</addressWorld>
-    <addressInternalGPS>127.0.0.1</addressInternalGPS>
-    <portInternalGPS>9907</portInternalGPS>
+
+    <addressInternalGPS>127.0.0.1</addressInternalGPS>;
+    <portInternalGPS>9907</portInternalGPS>;
   </network>
   <cameras>
+
+  <!--
     <camera1>rtspsrc location=rtsp://192.168.15.184/live/0</camera1>
-    <camera2>rtspsrc location=rtsp://192.168.15.109/live/1</camera2>
-    <camera3>rtspsrc location=rtsp://192.168.15.109/live/1</camera3>
-    <camera4>rtspsrc location=rtsp://192.168.15.109/live/1</camera4>
-    <optionsCamera1> latency=0 ! decodebin ! videoconvert ! video/x-raw,format=RGB ! </optionsCamera1>
-    <optionsCamera2> latency=0 ! decodebin ! videoconvert ! video/x-raw,format=RGB ! </optionsCamera2>
-    <optionsCamera3> latency=0 ! decodebin ! videoconvert ! video/x-raw,format=RGB ! </optionsCamera3>
-    <optionsCamera4> latency=0 ! decodebin ! videoconvert ! video/x-raw,format=RGB ! </optionsCamera4>
-    <optionsSufix>appsink name=videoSink sync=false</optionsSufix>
+    <camera2>rtspsrc location=rtsp://192.168.15.184/live/0</camera2>
+
+    <camera1>rtspsrc location=rtsp://100.106.67.21:8554/mystream</camera1>
+    <camera2>rtspsrc location=rtsp://100.106.67.21:8554/mystream</camera2>
+    <camera3>rtspsrc location=rtsp://100.67.37.39:8554/mystream</camera3>
+    <camera4>rtspsrc location=rtsp://100.106.67.21:8554/mystream</camera4>
+  -->
+   
+    <camera1>rtspsrc location=rtsp://192.168.15.184/live/0</camera1>
+    <camera2>rtspsrc location=rtsp://192.168.15.184/live/0</camera2>
+    <camera3>rtspsrc location=rtsp://100.67.37.39:8554/mystream</camera3>
+    <camera4>rtspsrc location=rtsp://100.106.67.21:8554/mystream</camera4>
+
+  <!--
+    Windows: 
+      decodebin
+      d3d11h265dec
+      d3d11h265device1dec
+      avdec_h265
+      rtph265depay
+  -->   
+
+    <optionsCamera1> latency=0 ! decodebin ! videoconvert ! video/x-raw,format=I420 ! appsink name=videoSink sync=false</optionsCamera1>
+    <optionsCamera2> latency=0 ! decodebin ! videoconvert ! video/x-raw,format=I420 ! appsink name=videoSink sync=false</optionsCamera2>
+    <optionsCamera3> latency=0 ! decodebin ! videoconvert ! video/x-raw,format=I420 ! appsink name=videoSink sync=false</optionsCamera3>
+    <optionsCamera4> latency=0 ! decodebin ! videoconvert ! video/x-raw,format=I420 ! appsink name=videoSink sync=false</optionsCamera4>
+  
+    <optionsSufix></optionsSufix>
   </cameras>
 </Config>

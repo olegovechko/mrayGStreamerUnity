@@ -131,6 +131,7 @@ gst_MyUDPSink_finalize(GObject * object)
 	{
 		sink->m_client->Close();
 		delete sink->m_client;
+		sink->m_client = 0;
 	}
 	G_OBJECT_CLASS(parent_class)->finalize(object);
 }

@@ -53,15 +53,15 @@ Win32Network::Win32Network():SYNC_NUMBER(1234567)
 	proto[1]=IPPROTO_UDP;
 
 	numProto=WSAEnumProtocols(proto,selectedProto,&buffSize);
-
-	delete [] proto;
-	proto=0; 
+	if (proto)
+	{
+		delete[] proto;
+		proto = 0;
+	}
 
 	free(selectedProto);
 	selectedProto=0;
 
-
-	 
 }
 
 Win32Network::~Win32Network(){

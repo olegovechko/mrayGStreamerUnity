@@ -41,6 +41,7 @@ extern "C" UNITY_INTERFACE_EXPORT void mray_gst_destroyUnityImageGrabber(UnityIm
 	if (g)
 	{
 		delete g;
+		g = 0;
 	}
 }
 
@@ -64,6 +65,7 @@ extern "C" UNITY_INTERFACE_EXPORT void mray_gst_UnityImageGrabberDestroy(UnityIm
 	if (!g)
 		return;
 	delete g;
+	g = 0;
 }
 
 #endif
@@ -74,6 +76,7 @@ extern "C" UNITY_INTERFACE_EXPORT void mray_gst_StreamerDestroy(IGStreamerStream
 	{
 		p->Close();
 		delete p;
+		p = 0;
 	}
 
 }
@@ -302,7 +305,9 @@ extern "C" UNITY_INTERFACE_EXPORT void mray_gst_AppNetAudioStreamerAttachGrabber
 
 extern "C" UNITY_INTERFACE_EXPORT void mray_gst_AudioGrabberDestroy(IAudioGrabber* g)
 {
-	delete g;
+	if (g)
+		delete g;
+	g = 0;
 }
 
 

@@ -324,7 +324,9 @@ GstNetworkVideoPlayer::GstNetworkVideoPlayer()
 
 GstNetworkVideoPlayer::~GstNetworkVideoPlayer()
 {
-	delete m_impl;
+	if (m_impl)
+		delete m_impl;
+	m_impl = 0;
 }
 void GstNetworkVideoPlayer::SetIPAddress(const std::string& ip, uint videoPort, uint clockPort, bool rtcp)
 {

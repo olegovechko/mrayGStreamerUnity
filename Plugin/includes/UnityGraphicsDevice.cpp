@@ -90,7 +90,8 @@ static void UNITY_INTERFACE_API OnGraphicsDeviceEvent(UnityGfxDeviceEventType ev
     // Cleanup graphics API implementation upon shutdown
     if (eventType == kUnityGfxDeviceEventShutdown)
     {
-        delete s_CurrentAPI;
+        if (s_CurrentAPI)
+            delete s_CurrentAPI;
         s_CurrentAPI = NULL;
         s_DeviceType = kUnityGfxRendererNull;
     }

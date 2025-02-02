@@ -39,7 +39,9 @@ public class CustomPipelinePlayer : MonoBehaviour {
 		//m_Texture.SetPipeline (pipeline+ "appsink name=videoSink sync=false");
 		Debug.Log($"SetPipeline --> {pipeline}");
 		m_Texture.SetPipeline (pipeline);
+		Debug.Log($"Create Stream");
 		m_Texture.Player.CreateStream ();
+		Debug.Log($"Play...");
 		m_Texture.Player.Play ();
 
         m_Texture.OnFrameBlitted += OnFrameBlitted;
@@ -58,6 +60,8 @@ public class CustomPipelinePlayer : MonoBehaviour {
     }
 	void OnFrameBlitted(GstBaseTexture src,int index)
     {
+		//Debug.Log($"OnFrameBlitted ");
+
         if (TargetMaterial != null)
             TargetMaterial.mainTexture = m_Texture.PlayerTexture()[0];
 

@@ -201,7 +201,9 @@ namespace mray
         
         GstCustomVideoPlayer::~GstCustomVideoPlayer()
         {
-            delete m_impl;
+            if (m_impl)
+                delete m_impl;
+            m_impl = 0;
         }
         GstPipelineHandler* GstCustomVideoPlayer::GetPipeline()
         {

@@ -37,7 +37,9 @@ namespace video
 
 		~VideoRTPDataListener()
 		{
-			delete m_mutex ;
+			if (m_mutex)
+				delete m_mutex;
+			m_mutex = 0;
 		}
 
 		void ListenerOnDataChained(_GstMyListener* src, GstBuffer * buffer)
@@ -157,7 +159,9 @@ namespace video
 
 		~VideoPreappDataListener()
 		{
-			delete m_mutex;
+			if (m_mutex)
+				delete m_mutex;
+			m_mutex = 0;
 		}
 
 		void ListenerOnDataChained(_GstMyListener* src, GstBuffer * buffer)
@@ -197,8 +201,12 @@ namespace video
 		}
 		~VideoAppSinkHandlerData()
 		{
-			delete rtplistener;
-			delete preapplistener;
+			if (rtplistener)
+				delete rtplistener;
+			rtplistener = 0;
+			if (preapplistener)
+				delete preapplistener;
+			preapplistener = 0;
 		}
 	};
 
@@ -228,8 +236,11 @@ VideoAppSinkHandler::~VideoAppSinkHandler()
 		m_rtpDataListener->listeners->RemoveListener(m_data->rtplistener);
 		m_preappsrcListener->listeners->RemoveListener(m_data->preapplistener);
 	}
-	delete m_data;
-	m_data = 0;
+	if (m_data)
+	{
+		delete m_data;
+		m_data = 0;
+	}
 }
 void VideoAppSinkHandler::Close()
 {

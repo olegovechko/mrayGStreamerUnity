@@ -1,31 +1,8 @@
-mray_gstreamer_initialize
-Initializing GStreamer Engine
-Initializing GStreamer Engine - Done
-Initializing GStreamer
-GStreamerCore - Registering Elements!
-GStreamerCore - GStreamer inited
-Initializing GStreamer - Done
-Info: Checking is active
-mray_gstreamer_initialize
-Info: Checking is active
-mray_gstreamer_initialize
-Info: Checking is active
-mray_gstreamer_initialize
-Info: Checking is active
-mray_gstreamer_initialize
-Info: Checking is active
-mray_gstreamer_initialize
-Info: Checking is active
-mray_gstreamer_initialize
-mray_gstreamer_initialize
-Info: Checking is active
-Info: Checking is active
-mray_gstreamer_initialize
-mray_gstreamer_initialize
-Warning: GstPipelineHandler::HandleMessage(): error in module videoEnc  reported: Can not initialize x264 encoder. - gstx264enc.c(1906): gst_x264_enc_init_encoder (): /GstPipeline:pipeline8/GstX264Enc:videoEnc
-mray_gstreamer_initialize
-Info: Checking is active
-mray_gstreamer_initialize
-Info: Checking is active
-mray_gstreamer_initialize
-Info: Checking is active
+GST: Info: mray_gstreamer_initialize
+GST: Info: Initializing GStreamer Engine
+GST: Info: Initializing GStreamer Engine - Done
+GST: Info: Initializing GStreamer
+GST: Info: GStreamerCore - Registering Elements!
+GST: Info: GStreamer 1.24.9 initialized
+GST: Info: GStreamerCore - GStreamer inited
+GST: Info: Initializing GStreamer - Done

@@ -255,6 +255,7 @@ extern "C" UNITY_INTERFACE_EXPORT void mray_gst_PlayerDestroy(IGStreamerPlayer* 
     {
         p->Close();
         delete p;
+		p = 0;
     }
 }
 

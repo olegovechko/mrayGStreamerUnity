@@ -312,7 +312,9 @@ GstCustomDataReceiver::GstCustomDataReceiver()
 
 GstCustomDataReceiver::~GstCustomDataReceiver()
 {
-	delete m_impl;
+	if (m_impl)
+		delete m_impl;
+	m_impl = 0;
 }
 void GstCustomDataReceiver::SetIPAddress(const std::string& ip, uint videoPort, uint count, uint clockPort, bool rtcp)
 {

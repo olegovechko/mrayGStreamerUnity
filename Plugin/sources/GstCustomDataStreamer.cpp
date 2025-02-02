@@ -55,6 +55,7 @@ protected:
 		{
 			if (data)
 				delete[] data;
+			data = 0;
 		}
 		uchar* data;
 		int length;
@@ -82,7 +83,11 @@ public:
 	virtual ~GstCustomDataStreamerImpl()
 	{
 		Close();
-		delete m_dataMutex;
+		if (m_dataMutex)
+		{
+			delete m_dataMutex;
+			m_dataMutex = 0;
+		}
 		for (DataSegment* d : m_data)
 			delete d;
 		for (DataSegment* d : m_grave)
@@ -114,6 +119,7 @@ public:
 		if (d)
 		{
 			delete[] d;
+			d = 0;
 		}
 	}
 	static void _DestroyNotifyChunk(gpointer       data)
@@ -123,6 +129,7 @@ public:
 		{
 			d->autoRemove=true;
 			delete d;
+			d = 0;
 		}
 	}
 
@@ -381,7 +388,9 @@ GstCustomDataStreamer::GstCustomDataStreamer()
 }
 GstCustomDataStreamer::~GstCustomDataStreamer()
 {
-	delete m_impl;
+	if (m_impl)
+		delete m_impl;
+	m_impl = 0;
 }
 
 GstPipelineHandler* GstCustomDataStreamer::GetPipeline()

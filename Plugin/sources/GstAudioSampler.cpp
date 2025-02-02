@@ -276,7 +276,9 @@ GstAudioSampler::GstAudioSampler()
 
 GstAudioSampler::~GstAudioSampler()
 {
-	delete m_impl;
+	if (m_impl)
+		delete m_impl;
+	m_impl = 0;
 }
 void GstAudioSampler::Init(int audioInterface, int samplingRate)
 {

@@ -60,7 +60,9 @@ DirectSoundOutputStream::DirectSoundOutputStream()
 }
 DirectSoundOutputStream::~DirectSoundOutputStream()
 {
-	delete m_data;
+	if (m_data)
+		delete m_data;
+	m_data = 0;
 }
 
 void DirectSoundOutputStream::ListDevices(std::vector<OutputStreamDeviceInfo> &lst)
